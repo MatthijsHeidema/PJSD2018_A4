@@ -10,8 +10,9 @@
 
 #include "Device.h"
 
-class Lamp : public Device {
-
+class Lamp : public Device { // @suppress("Class has a virtual method and non-virtual destructor")
+public:
+	using Device::Device;
 	void sync();
 };
 
