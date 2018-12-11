@@ -37,7 +37,7 @@ private:
 
 
 	int sendString(string str);
-
+	char buffer[1024];
 };
 
 #endif /* TCP_CLIENT_H_ */

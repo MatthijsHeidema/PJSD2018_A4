@@ -80,7 +80,7 @@ const char* TCP_Client::receiveValue(string key)
 {
 	sendString(key);	//First send the key where you want the value from
 
-	char buffer[1024] = {0};		//creating a buffer
+	buffer[1024] = {0};		//clear buffer
 	read(sock, buffer, 1024);		//Reading the value from the socket
 	return buffer;					//returning the value
 	//Debug printf("%s\n",buffer);
