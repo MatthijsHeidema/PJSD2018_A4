@@ -1,18 +1,9 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<title>Home automation</title>
-		<link rel="stylesheet" type="text/css" href="style.css"/>
-	</head>
-<body>
-		<ul>
-			<li><a class="active" href="index.html">Timothy</a></li>
-			<li><a href="Bewaker.html">Gaurd</a></li>
-			<li><a href="Verpleegster.html">Nurse</a></li>
-		</ul>
+<!DOCTYPE html>
 
-			<main>
-				<h1> Home Automation System for Timothy </h1>
+<html>
+<body>
+
+<h1> Home Automation System for Timothy </h1>
 
 <?php
 	define("PATH_TO_JSON", "/home/pi/Documents/PI_client/client.json");
@@ -25,15 +16,11 @@
 ?>
 
 <p>
-	Switch value: <?php echo $jsonObject->{'Switch'}; ?><br>
-	LedValue value: <?php echo $jsonObject->{'LedValue'} ?><br>
+	Switch value: <?php echo $jsonObject->{'Switch'} ?><br>
 	ToggleLed value: <?php echo $jsonObject->{'ToggleLed'} ?><br>
+	LedValue value: <?php echo $jsonObject->{'LedValue'} ?><br>
 	<form method="post">
-		<input type="submit" name="ToggleLed" id="ToggleLed" value="Toggle Lamp Led" />
-		<input type="submit" name="ToggleLed" id="ToggleLed" value="Toggle Bed Led" />
-		<input type="submit" name="ToggleLed" id="ToggleLed" value="Toggle Raam Venster Led" />
-		<input type="submit" name="ToggleLed" id="ToggleLed" value="Toggle Raam Led-strip" />
-		<input type="submit" name="ToggleLed" id="ToggleLed" value="Toggle Deur Led" /><br>
+		<input type="submit" name="ToggleLed" value="Toggle Led" /><br>
 	</form>
 	<form method="post">
 		<input type="number" name="LedValue" id="LedValue" min="0" max="15"><br>
@@ -67,10 +54,6 @@
 		header("Refresh:0");
 	}
 ?>
-			</main>
-
-			</br>
 
 </body>
-
 </html>
