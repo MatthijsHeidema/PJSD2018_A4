@@ -30,10 +30,11 @@ public:
 	const char* receiveValue(string);
 
 private:
-	int sock;
-	int port;
-	struct sockaddr_in serv_addr;
 	const char *ip_address;
+	int port;
+	int sock;
+	struct sockaddr_in serv_addr;
+
 
 	int sendString(string str);
 
