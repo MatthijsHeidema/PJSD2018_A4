@@ -10,13 +10,15 @@
 void Bed::sync() {
 
 	file->updateDoc();
-	comm->connectToServer();
-	const char* Night = file->getStringValue("Night");
-	comm->sendValue("Night", Night);
-	const char* outOfBed = comm->receiveValue("OutOfBed");
-	const char* seizure = comm->receiveValue("Seizure");
-	comm->disconnectFromServer();
-	file->edit("OutOfBed", outOfBed);
-	file->edit("Seizure", seizure);
-	file->updateFile();
+
+
+	const char* bedLight = comm->receiveValue("BedLight");
+	comm->sendValue("BedLight", bedLight);
+
+	//const char* outOfBed = comm->receiveValue("OutOfBed");
+	//const char* seizure = comm->receiveValue("Seizure");
+
+	//file->edit("OutOfBed", outOfBed);
+	//file->edit("Seizure", seizure);
+	//file->updateFile();
 }
