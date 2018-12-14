@@ -10,13 +10,14 @@
 void Lamp::sync() {
 
 	file->updateDoc();
-	comm->connectToServer();
 
 	const char* toggleLed = file->getStringValue("ToggleLed");
 	const char* color = file->getStringValue("Color");
 	comm->sendValue("ToggleLed", toggleLed);
+	cout << "ToggleLed" << toggleLed << endl;
 	comm->sendValue("Color", color);
+	cout << "Color" << color << endl;
 
-	comm->disconnectFromServer();
+	//comm->disconnectFromServer();
 	file->updateFile();
 }
