@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include "Lamp.h"
 
-
 using namespace std;
 
 int main()
