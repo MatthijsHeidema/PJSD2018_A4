@@ -11,12 +11,12 @@
 CRGB led[NUM_LEDS];
 
 
-IPAddress ip (10,42,0,22);//(192, 168, 3, 1);
-IPAddress gateway (10,42,0,1);//(192, 168, 4, 1);
+IPAddress ip(192, 168, 3, 1);
+IPAddress gateway (192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-const char* ssid     = "Rasp4";//"PIWORKS";
-const char* password = "raspberry";//"PInetPASSword123";
+const char* ssid     = "PIWORKS";
+const char* password = "PInetPASSword123";
 
 int delayval = 500;
 unsigned int outputs = 0;
@@ -123,7 +123,7 @@ void confetti()
 
 void colorPicker(String color){
   if(state){
-       if(color == "Color:Green"){
+       if(color == "ToggleLed:1Color:green"){
           led[0] = CRGB::Green;
           FastLED.show();
        }
@@ -155,26 +155,24 @@ void Status(String request){
 }
 
 void loop() {
-  WiFiClient client = wifiServer.available();
-  if (client)
-  {
-    while (client.connected())
-    {
-      Serial.println("pi connected");
-      while (!client.available()) {
-        delay(1);
-      }
-      // Read the first line of the request
-      String req = client.readStringUntil('\r');
+   WiFiClient client = wifiServer.available();
 
-      colorPicker(req);
+  if (client) {
+
+    while (client.connected()) {
+
+      while (client.available() > 0) {
+        request = client.readStringUntil('\r');
+        Serial.println(request);        
+      }
+
+      colorPicker(request);
+                  
+      delay(250);      
     }
-    delay(100);
-    Serial.println("Client disonnected");
+
     client.stop();
-    //return;
-    // The client will actually be disconnected
-    // when the function returns and 'client' object is detroyed
+    Serial.println("Client disconnected");
   }else{
     buttons();
     color();
