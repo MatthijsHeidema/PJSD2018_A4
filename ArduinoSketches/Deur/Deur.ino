@@ -1,20 +1,14 @@
 #include "ESP8266WiFi.h"
 #include <Wire.h>
 
-#define I2C_SDL    D1
-#define I2C_SDA    D2
 #define AAN true
 #define UIT false
 
 const char* ssid = "RaspberryA4";
 const char* password =  "kamerplant";
-char buffer_array[3];
-int i = 0, analog[2], movement_counter;
-bool new_data_flag = false, led_status = false, led_update = false, in_bed = false, 
-     epilepsy_attack = false, bed_update = false, epilepsy_timer_start = true;
+bool new_data_flag = false, led_status = false, led_update = false;
 String request;
 unsigned char schakelaar;
-unsigned long time_led_on, time_led_current, time_in_bed, time_bed_current;
 
 WiFiServer wifiServer(80);
 
@@ -63,47 +57,15 @@ void loop() {
 
       while (client.available() > 0) {
         request = client.readStringUntil('\r');
-        //client.flush();
-        //request = client.read();
         Serial.println(request);        
       }
 
-      if (request == "sw") {
-        Wire.beginTransmission(0x38);
-        Wire.write(byte(0x00));
-        Wire.endTransmission();
-        Wire.requestFrom(0x38, 1);
-        unsigned char inputs = Wire.read();
-        unsigned char sensorwaarde = inputs & 0x0F;
-        Serial.print("Digital in: ");
-        Serial.println(sensorwaarde);
-        client.print(sensorwaarde);
-        request = "";
-      }    
+      if (request == " ") {
 
-      if (request == "leds") {      
-        
-        Wire.beginTransmission(0x38); 
-        Wire.write(byte(0x01));            
-        Wire.write(byte(15<<4));            
-        Wire.endTransmission();  
-        client.print("LEDs aan");
-        Serial.println("LEDs aan");
-     
-        delay(5000);   
-        
-        Wire.beginTransmission(0x38); 
-        Wire.write(byte(0x01));            
-        Wire.write(byte(0<<4));            
-        Wire.endTransmission();  
-        client.print("LEDs uit");
-        Serial.println("LEDs uit");
         request = "";
-       
       }
-            
-      delay(250);
-      
+                  
+      delay(250);      
     }
 
     client.stop();
@@ -125,8 +87,6 @@ void loop() {
     if((led_update == true) & (led_status == UIT)){ 
             
         setOutput(0x01,AAN);
-
-        time_led_on = millis();
         
         led_status = AAN;
         led_update = false;
@@ -138,55 +98,8 @@ void loop() {
   if(schakelaar == 1){
     led_update = true;
   }
-
-  if(led_status == AAN){
-    time_led_current = millis();
-  }
-
-  if(time_led_current - time_led_on > 5000){
-
-    setOutput(0x01,UIT);
-
-    led_status = UIT;
-    led_update = false;
-
-    time_led_on = time_led_current;
-    Serial.println("Automatisch uit.");
-  }
   
-  readAnalog(analog);
-  Serial.println(analog[0]);
-  //Serial.println(analog[1]);
-  time_bed_current = millis();
-
-  if((analog[0] > 700) & (bed_update == true)){
-    in_bed = true;
-    bed_update = false;
-    Serial.println("In bed.");
-    movement_counter++;    
-    if(epilepsy_timer_start == true){
-      time_in_bed = millis();
-      epilepsy_timer_start = false;
-    }            
-  }else if(analog[0] < 700){
-    in_bed = false;
-    bed_update = true;
-    //Serial.println("Uit bed.");
-  }
-
-  if(movement_counter >= 5){
-    epilepsy_attack = true;
-    Serial.println("EPILEPSIE AANVAL GEDETECTEERD");
-  }
-
-  if((time_bed_current - time_in_bed > 8000) & (epilepsy_attack = false)){
-    movement_counter = 0;
-    epilepsy_timer_start = true;
-    time_in_bed = time_bed_current;
-    Serial.println("Epilepsie timer gereset");  
-  }
-  
-  delay(500);
+  //delay(500);
   
 }
 
