@@ -12,6 +12,7 @@
 
 class Bed : public Device { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
+	using Device::Device;
 	void sync();
 };
 
