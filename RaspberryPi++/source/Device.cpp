@@ -12,3 +12,7 @@ Device::Device(const char* ip_address, const char* filePath, int port) : comm(ne
 
 void Device::sync(){};
 
+bool Device::connectToServer() {
+
+	return comm->connectToServer();
+}
