@@ -17,6 +17,9 @@ void Lamp::sync() {
 	cout << "ToggleLed" << toggleLed << endl;
 	comm->sendValue("Color", color);
 	cout << "Color" << color << endl;
+	const char* PIR = comm->receiveValue("PIR");
+	cout << "PIR: " << PIR << endl;
+	file->edit("PIR", PIR);
 
 	//comm->disconnectFromServer();
 	file->updateFile();

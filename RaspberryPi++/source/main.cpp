@@ -15,13 +15,11 @@ int main()
 
 	//Connect to devices
 	lamp.connectToServer();
-	lamp1.connectToServer();
 
 	while(1) {
 
 		//Synchronize devices with JSON file
 		lamp.sync();
-		lamp1.sync();
 		usleep(2000000);
 	}
 
