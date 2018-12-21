@@ -23,7 +23,7 @@ void Lamp::sync() {
 	const char* PIR = comm->receiveValue("PIR");
 	usleep(1000000);
 	cout << "PIR: " << PIR << endl;
-	file->edit("PIR", PIR);
+	//file->edit("PIR", PIR);
 
 	//comm->disconnectFromServer();
 	file->updateFile();

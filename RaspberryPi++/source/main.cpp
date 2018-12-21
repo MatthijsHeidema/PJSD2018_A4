@@ -14,13 +14,13 @@ int main()
 	Lamp lamp("172.16.4.4", "/var/www/html/lamp.json" , 3005);
 
 	//Connect to devices
+	//cout << " DUURTLANG" << endl;
 	lamp.connectToServer();
+	//cout << "testje" << endl;
 
 	while(1) {
-
-		//Synchronize devices with JSON file
 		lamp.sync();
-		usleep(2000000);
+		usleep(1000000);
 	}
 
 	return 0;

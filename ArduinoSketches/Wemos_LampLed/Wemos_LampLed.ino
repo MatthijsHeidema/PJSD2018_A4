@@ -23,8 +23,8 @@ unsigned int outputs = 0;
 
 String received = " ";
 const char* preceived = "";
-char key[64];
-char value[64];
+char key[32] = {0};
+char value[32] = {0};
 
 int modus = 0;
 int ledval = 0;
@@ -32,7 +32,7 @@ int button = 0;
 int gHue;
 unsigned int inputs;
 bool state;
-//char color[64] = "";
+char color_val[32] = {0};
 
 WiFiServer wifiServer(3005);
 void wemosFi();
@@ -50,8 +50,12 @@ void setup() {
   delay(1000);
   leds(0);
   delay(1000);
-
+  
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(led, NUM_LEDS);
+  Serial.println("LED FLASH");
+  led[0] = CRGB::Green;
+  FastLED.show();
+  delay(1000);
 
 }
 
@@ -64,10 +68,11 @@ void loop() {
 
       while (client.available() > 0) {
         received = client.readStringUntil('\r');
+        //strncpy(preceived, received.c_str(), 64);
         preceived = received.c_str();
-        Serial.println(preceived);        
+        //Serial.println(received);      
       }
-
+      
      if(!splitInto(preceived, key, value)) {
 
         Serial.print("key: ");
@@ -79,32 +84,32 @@ void loop() {
           Status(value);
           
         } else if (!strcmp(key, "Color")) {
-          colorPicker(value);
+          strncpy(color_val, value, 32);
           
         } else if (!strcmp(key, "PIR")) {
           //Send PIR value
-          String pir_val = String(inputs&0x0F);
-          client.write(pir_val.c_str(), 64);
+          //String pir_val = String(inputs&0x0F);
+          char pir_val[16] = "";
+          itoa(inputs&0x0F, pir_val, 10);
+          client.write(pir_val, 16);
         
         } else {
           Serial.println("Unknown command");
         }
         
-      } else {
-        Serial.println("Invalid input");
+        //preceived[0] = '\0';
       }
-
-      //colorPicker(color);
-                  
-      delay(250);      
+      
+      colorPicker(color_val);
+      buttons();
+      color();
     }
-
-    buttons();
-    color();
 
     client.stop();
     Serial.println("Client disconnected");
-  } 
+  }
+  //buttons();
+  //color();
 }
 
 
@@ -182,10 +187,11 @@ void confetti()
 }
 
 void colorPicker(const char* color){
-  if(state){
+  if(true){
        if(!strcmp(color,"Green")){
           led[0] = CRGB::Green;
           FastLED.show();
+          Serial.println("Green!");
        }
        if(!strcmp(color,"White")){
           led[0] = CRGB::White;
