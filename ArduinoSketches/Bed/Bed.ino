@@ -8,15 +8,18 @@
 
 const char* ssid = "RaspberryA4";
 const char* password =  "kamerplant";
-char buffer_array[3];
+const char* switchStatusChange = "0";
+char buffer_array[4];
 int i = 0, analog[2], movement_counter;
 bool new_data_flag = false, led_status = false, led_update = false, in_bed = false, 
      epilepsy_attack = false, bed_update = false, epilepsy_timer_start = true;
+int previousSwitchStatus;
 String request;
 unsigned char schakelaar;
 unsigned long time_led_on, time_led_current, time_in_bed, time_bed_current;
+const char* analogValueString;
 
-WiFiServer wifiServer(80);
+WiFiServer wifiServer(3000);
 
 void setup() {
   
@@ -24,14 +27,15 @@ void setup() {
 
   Serial.begin(115200);
 
-  delay(1000);
+  //delay(1000);
 
-  setDDR(0x01); 
-
-  /*    
+  setDDR(0x01);
+  setOutput(0x01,UIT);     
      
   IPAddress ip(10,10,10,20); // where xx is the desired IP Address
+  //IPAddress ip(192,168,4,5);
   IPAddress gateway(10,10,10,1); // set gateway to match your network 
+  //IPAddress gateway(192,168,4,1);
   IPAddress subnet(255, 255, 255, 0); // set subnet mask to match your network
   WiFi.config(ip, gateway, subnet);
 
@@ -48,7 +52,7 @@ void setup() {
 
   wifiServer.begin();  
 
-  */
+  
   
 }
 
@@ -62,54 +66,57 @@ void loop() {
     while (client.connected()) {
 
       while (client.available() > 0) {
-        request = client.readStringUntil('\r');
-        //client.flush();
-        //request = client.read();
-        Serial.println(request);        
-      }
-
-      if (request == "sw") {
-        Wire.beginTransmission(0x38);
-        Wire.write(byte(0x00));
-        Wire.endTransmission();
-        Wire.requestFrom(0x38, 1);
-        unsigned char inputs = Wire.read();
-        unsigned char sensorwaarde = inputs & 0x0F;
-        Serial.print("Digital in: ");
-        Serial.println(sensorwaarde);
-        client.print(sensorwaarde);
-        request = "";
-      }    
-
-      if (request == "leds") {      
-        
-        Wire.beginTransmission(0x38); 
-        Wire.write(byte(0x01));            
-        Wire.write(byte(15<<4));            
-        Wire.endTransmission();  
-        client.print("LEDs aan");
-        Serial.println("LEDs aan");
-     
-        delay(5000);   
-        
-        Wire.beginTransmission(0x38); 
-        Wire.write(byte(0x01));            
-        Wire.write(byte(0<<4));            
-        Wire.endTransmission();  
-        client.print("LEDs uit");
-        Serial.println("LEDs uit");
-        request = "";
+        request = client.readStringUntil('\r');        
+        Serial.println(request);               
        
       }
+
+      if(request == "BedLight:?")
+      {
+        client.write(switchStatusChange,2);
+        Serial.print("Switch status verandering: ");
+        Serial.println(switchStatusChange);        
+        request = "";
+        switchStatusChange = "0";
+      }
+      if(request == "BedLight:1")
+      {
+        setOutput(0x01,AAN);
+        request = "";    
+      }
+      if(request == "BedLight:0")
+      {
+        setOutput(0x01,UIT);
+        request = "";
+      }
+
+      if(request == "PressureSensor:?")
+      {        
+        analogValueString = itoa(analog[0], buffer_array, 10);
+        client.write(analogValueString,sizeof(analogValueString));
+        request = "";
+      }
             
-      delay(250);
+      //delay(250);
+      
+      int switchStatus = readSwitch(1);
+      readAnalog(analog);     
+      
+      if(switchStatus == 0 && previousSwitchStatus == 1){
+        switchStatusChange = "1";
+        Serial.println("Knop gedrukt");
+      }
+      
+      previousSwitchStatus = switchStatus;
       
     }
 
     client.stop();
     Serial.println("Client disconnected");
+    
   }
 
+/*
   schakelaar = readSwitch(1);
 
   if(schakelaar == 0){
@@ -154,12 +161,13 @@ void loop() {
     Serial.println("Automatisch uit.");
   }
   
+  
   readAnalog(analog);
-  Serial.println(analog[0]);
+  //Serial.println(analog[0]);
   //Serial.println(analog[1]);
   time_bed_current = millis();
 
-  if((analog[0] > 700) & (bed_update == true)){
+  if((analog[0] > 500) & (bed_update == true)){
     in_bed = true;
     bed_update = false;
     Serial.println("In bed.");
@@ -168,7 +176,7 @@ void loop() {
       time_in_bed = millis();
       epilepsy_timer_start = false;
     }            
-  }else if(analog[0] < 700){
+  }else if(analog[0] < 500){
     in_bed = false;
     bed_update = true;
     //Serial.println("Uit bed.");
@@ -179,14 +187,16 @@ void loop() {
     Serial.println("EPILEPSIE AANVAL GEDETECTEERD");
   }
 
-  if((time_bed_current - time_in_bed > 8000) & (epilepsy_attack = false)){
+  if((time_bed_current - time_in_bed > 8000) & (epilepsy_attack == false)){
     movement_counter = 0;
     epilepsy_timer_start = true;
     time_in_bed = time_bed_current;
     Serial.println("Epilepsie timer gereset");  
   }
   
-  delay(500);
+  //delay(500);
+
+  */
   
 }
 
