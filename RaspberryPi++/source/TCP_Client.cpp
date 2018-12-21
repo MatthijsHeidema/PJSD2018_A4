@@ -78,10 +78,12 @@ int TCP_Client::sendValue(string key, string value)
 
 const char* TCP_Client::receiveValue(string key)
 {
-	sendString(key);	//First send the key where you want the value from
+	string sendformat = key + "?";
+	sendString(sendformat);	//First send the key where you want the value from
 
-	buffer[1024] = {0};		//clear buffer
-	read(sock, buffer, 1024);		//Reading the value from the socket
+	buffer[16] = {0};		//clear buffer
+	recv(sock, buffer, 16, MSG_DONTWAIT);		//Reading the value from the socket
+	//std::cout << buffer << endl;
 	return buffer;					//returning the value
 	//Debug printf("%s\n",buffer);
 }
