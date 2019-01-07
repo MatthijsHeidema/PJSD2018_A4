@@ -16,3 +16,18 @@ bool Device::connectToServer() {
 
 	return comm->connectToServer();
 }
+
+bool Device::nighttimeCheck() {
+	time_t currentTime = time(0);
+	struct tm *tempTijd = gmtime(&currentTime);
+	if(tempTijd->tm_sec > 30)
+	{
+		//cout << "Nacht" << endl;
+		return true;
+	}
+	else
+	{
+		//cout << "Dag" << endl;
+		return false;
+	}
+}

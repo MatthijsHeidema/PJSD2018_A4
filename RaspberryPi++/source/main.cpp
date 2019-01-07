@@ -4,25 +4,30 @@
 
 #include <stdio.h>
 #include "Lamp.h"
+#include "Bed.h"
 
 using namespace std;
 
 int main()
 {
 	//Construct devices
-	Lamp lamp(IP_LAMP, FILE_PATH_LAMP, PORT_LAMP);
-	Lamp lamp1("192.168.4.5", "/var/www/html/lamp1.json" , 3001);
+	//Lamp lamp(IP_LAMP, FILE_PATH_LAMP, PORT_LAMP);
+	Bed bed("10.10.10.20", "/home/pi/Documents/bed.json", 3000);
+
 
 	//Connect to devices
-	lamp.connectToServer();
-	lamp1.connectToServer();
+	//lamp.connectToServer();
+	bed.connectToServer();
+
 
 	while(1) {
 
 		//Synchronize devices with JSON file
-		lamp.sync();
-		lamp1.sync();
-		usleep(2000000);
+		//lamp.sync();
+		bed.sync();
+		usleep(1000000);
+		//cout << "Looped" << endl;
+		//sleep(1);
 	}
 
 	return 0;
