@@ -123,6 +123,24 @@ void readFromAnalog(int* analog_values) {            // Function for reading an 
   */
 }
 
+int readSwitch(int switch_bit){
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x00));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);
+  int all_switches = Wire.read();
+  int switch_address = 0;
+  switch_address = 1 << (switch_bit - 1);
+  int single_switch = all_switches & switch_address;
+  /*
+  Serial.print("Bit adres: ");
+  Serial.println(switch_address);
+  Serial.print("Waarde: ");
+  Serial.println(single_switch);
+  */
+  return single_switch;
+}
+
 int splitInto(const char* received, char key[64], char value[64]) {
 
   const char *tracker = received;     //pointer to go through received
