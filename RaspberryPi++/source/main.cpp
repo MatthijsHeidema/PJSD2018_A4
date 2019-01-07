@@ -12,22 +12,15 @@ int main()
 {
 	//Construct devices
 	//Lamp lamp(IP_LAMP, FILE_PATH_LAMP, PORT_LAMP);
-	Bed bed("10.10.10.20", "/home/pi/Documents/bed.json", 3000);
 
+	Lamp lamp("172.16.4.4", "/var/www/html/lamp.json" , 3005);
 
 	//Connect to devices
-	//lamp.connectToServer();
-	bed.connectToServer();
-
+	lamp.connectToServer();
 
 	while(1) {
-
-		//Synchronize devices with JSON file
-		//lamp.sync();
-		bed.sync();
+		lamp.sync();
 		usleep(1000000);
-		//cout << "Looped" << endl;
-		//sleep(1);
 	}
 
 	return 0;

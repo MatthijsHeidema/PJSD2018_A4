@@ -11,25 +11,30 @@
 CRGB led[NUM_LEDS];
 
 
-IPAddress ip(192, 168, 3, 1);
-IPAddress gateway (192, 168, 4, 1);
+IPAddress ip(172, 16, 4, 4);
+IPAddress gateway (172, 16, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-const char* ssid     = "PIWORKS";
-const char* password = "PInetPASSword123";
+const char* ssid     = "WinnieThePi";
+const char* password = "3114800R";
 
 int delayval = 500;
 unsigned int outputs = 0;
 
-String request = " ";
+String received = " ";
+char useless[128] = {0};
+char key[32] = {0};
+char value[32] = {0};
+
 int modus = 0;
 int ledval = 0;
 int button = 0;
 int gHue;
 unsigned int inputs;
 bool state;
+char color_val[32] = {0};
 
-WiFiServer wifiServer(3000);
+WiFiServer wifiServer(3005);
 void wemosFi();
 int buttons();
 
@@ -45,10 +50,74 @@ void setup() {
   delay(1000);
   leds(0);
   delay(1000);
-
+  
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(led, NUM_LEDS);
+  Serial.println("LED FLASH");
+  led[0] = CRGB::Green;
+  FastLED.show();
+  delay(1000);
 
 }
+
+void loop() {
+   WiFiClient client = wifiServer.available();
+
+  if (client) {
+
+    while (client.connected()) {
+
+      if (client.available() > 0) {
+        received = client.readStringUntil('\r');
+        //strncpy(preceived, "Key:Value", 64);
+        //preceived;
+        //preceived = received.c_str();
+        Serial.println(useless); 
+        //Serial.println();     
+      }
+      
+     if(!splitInto(received.c_str(), key, value)) {
+
+        Serial.print("key: ");
+        Serial.print(key);
+        Serial.print("; value: ");
+        Serial.println(value);
+        
+        if(!strcmp(key, "ToggleLed")) {
+          Status(value);
+          
+        } else if (!strcmp(key, "Color")) {
+          strncpy(color_val, value, 32);
+          
+        } else if (!strcmp(key, "PIR")) {
+          //Send PIR value
+          //String pir_val = String(inputs&0x0F);
+          char pir_val[16] = "";
+          itoa(inputs&0x0F, pir_val, 10);
+          client.write(pir_val, 16);
+        
+        } else {
+          Serial.println("Unknown command");
+        }
+        
+        received = "";
+      } else {
+        //Serial.println("invalid input");
+      }
+      
+      colorPicker(color_val);
+      buttons();
+      color();
+    }
+
+    client.stop();
+    Serial.println("Client disconnected");
+  }
+  //buttons();
+  //color();
+}
+
+
+
 
 void wemosFi()
 {
@@ -121,61 +190,69 @@ void confetti()
   led[pos] += CHSV( gHue + random8(64), 200, 255);
 }
 
-void colorPicker(String color){
+void colorPicker(const char* color){
   if(state){
-       if(color == "ToggleLed:1Color:green"){
+       if(!strcmp(color,"Green")){
           led[0] = CRGB::Green;
           FastLED.show();
        }
-       if(color == "Color:White"){
+       if(!strcmp(color,"White")){
           led[0] = CRGB::White;
           FastLED.show();
        }
-       if(color == "Color:Red"){ 
+       if(!strcmp(color,"Red")){ 
           led[0] = CRGB::Red;
           FastLED.show();
        }
-       if(color == "Color:Blue"){
+       if(!strcmp(color,"Blue")){
           led[0] = CRGB::Blue;
           FastLED.show();
        }
-       if(color == "Color:Yellow"){
+       if(!strcmp(color,"Yellow")){
           led[0] = CRGB::Yellow;
           FastLED.show();
        }
   }
 }
 
-void Status(String request){
-  if(request == "ToggleLed:0"){
+void Status(char value[]){
+  if(!strcmp(value, "0")) {
     state = false;
-  }else if(request == "ToggleLed:1"){
+  }else if(!strcmp(value, "1")) {
     state = true;
   }
 }
 
-void loop() {
-   WiFiClient client = wifiServer.available();
+int splitInto(const char* input, char key[64], char value[64]) {
 
-  if (client) {
-
-    while (client.connected()) {
-
-      while (client.available() > 0) {
-        request = client.readStringUntil('\r');
-        Serial.println(request);        
-      }
-
-      colorPicker(request);
-                  
-      delay(250);      
+  //Serial.print("input is:"); Serial.println(input);
+  const char *tracker = input;     //pointer to go through received
+  int command = 0;                    //differentiate between key and value
+  
+  //Empty key and value arrays
+  memset(&key[0], 0, 64);
+  memset(&value[0], 0, 64);
+  
+  for(int i = 0; i < 63 && *tracker; i++, tracker++) { //loops untill \0 is found or max size of arrays is reached
+    
+    if(*tracker == ':') {
+      command = 1;                                     //received is a command, the rest of the input is the value associated with it
+      i = -1;                                          //reset i (will become 0 before next iteration)
+      continue;
     }
-
-    client.stop();
-    Serial.println("Client disconnected");
-  }else{
-    buttons();
-    color();
+    
+    if (command) {                                     //if ':' was found, write the rest of the string to value
+      value[i] = *tracker;
+    
+    } else if (*tracker == '?') {                     //if '?' is found, received is a request, no value is given
+      value[0] = '?';                                 //write "?" to value
+      return 0;                                       //return
+    
+    } else {                                          //if neither ':' nor '?' was found, continue writing to key
+      key[i] = *tracker;
+    }
   }
   
+  if(command) return 0;                               //if neither ':' nor '?' was found before end of received, it is invalid
+  return 1;
 }
