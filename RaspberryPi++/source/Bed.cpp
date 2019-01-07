@@ -31,7 +31,7 @@ void Bed::sync() {
 		if(!strcmp(bedLightStatus,"0"))
 		{
 			comm->sendValue("BedLight","1");
-			time(&timeLightOn);
+			time(&timeBedLightOn);
 			file->edit("BedLight","1");
 			bedLightToggle = "0";
 		}
@@ -41,7 +41,7 @@ void Bed::sync() {
 	{
 		automaticLightOff(5);
 
-		if(difftime(time(0),timeOutOfBed) > 5)
+		if(difftime(time(0),timeOffDevice) > 5)
 		{
 			//cout << "Langer dan 5 seconden uit bed" << endl;
 			file->edit("OutOfBed","1");
@@ -54,62 +54,20 @@ void Bed::sync() {
 
 	if(pressureSensorLogic(pressureSensor)){
 		//cout << "EPILEPSIE AANVAL" << endl;
-		file->edit("EpilepsieAanval","1");
+		file->edit("EpilepsieAanvalBed","1");
 	}
 
 	file->updateFile();
 
 }
 
-bool Bed::pressureSensorLogic(const char* value) {
-	int sensorValue = atoi(value);
 
-	if(sensorValue > 500 && bedUpdate)
-	{
-		inBed = true;
-		bedUpdate = false;
-		movementCounter++;
-		cout << "Beweging counter omhoog" << endl;
-
-
-		if(intervalStart)
-		{
-			time(&intervalStartTime);
-			intervalStart = false;
-			cout << "Interval gestart" << endl;
-		}
-	}
-	else if(sensorValue < 500 && !bedUpdate)
-	{
-		inBed = false;
-		bedUpdate = true;
-		time(&timeOutOfBed);
-		cout << "Uit bed" << endl;
-	}
-
-	if(difftime(time(0),intervalStartTime) > 8)
-	{
-		cout << "Interval voorbij" << endl;
-		time(&intervalStartTime);
-		movementCounter = 0;
-		intervalStart = true;
-	}
-
-	if(movementCounter > 5)
-	{
-		return true; 			//return true als er meer dan 5 bewegingen binnnen het interval worden gedetecteerd
-	}							//dit is gedefinieerd als een detectie van een epilepsieaanval
-	else
-	{
-		return false;
-	}
-}
 
 void Bed::automaticLightOff(int timeUntilOff) {
 
 	const char* bedLightStatus = file->getStringValue("BedLight");
 
-	if(difftime(time(0),timeLightOn) > timeUntilOff && !strcmp(bedLightStatus,"1"))
+	if(difftime(time(0),timeBedLightOn) > timeUntilOff && !strcmp(bedLightStatus,"1"))
 	{
 		comm->sendValue("BedLight","0");
 		file->edit("BedLight","0");
