@@ -14,9 +14,9 @@ void Bed::sync() {
 	file->updateDoc();
 
 	const char* bedLightToggle = comm->receiveValue("BedLight");
-	cout << "Licht toggle: " << bedLightToggle << endl;
+	//cout << "Licht toggle: " << bedLightToggle << endl;
 	const char* bedLightStatus = file->getStringValue("BedLight");
-	cout << "Licht status: " << bedLightStatus << endl;
+	//cout << "Licht status: " << bedLightStatus << endl;
 
 
 	if(!strcmp(bedLightToggle,"1"))
@@ -40,21 +40,28 @@ void Bed::sync() {
 	if(nighttimeCheck())
 	{
 		automaticLightOff(5);
+
+		if(difftime(time(0),timeOutOfBed) > 5)
+		{
+			//cout << "Langer dan 5 seconden uit bed" << endl;
+			file->edit("OutOfBed","1");
+		}
 	}
 
 
 	const char* pressureSensor = comm->receiveValue("PressureSensor");
 	cout << pressureSensor << endl;
 
-	if(seizureDetection(pressureSensor)){
-
+	if(pressureSensorLogic(pressureSensor)){
+		//cout << "EPILEPSIE AANVAL" << endl;
+		file->edit("EpilepsieAanval","1");
 	}
 
 	file->updateFile();
 
 }
 
-bool Bed::seizureDetection(const char* value) {
+bool Bed::pressureSensorLogic(const char* value) {
 	int sensorValue = atoi(value);
 
 	if(sensorValue > 500 && bedUpdate)
@@ -62,26 +69,40 @@ bool Bed::seizureDetection(const char* value) {
 		inBed = true;
 		bedUpdate = false;
 		movementCounter++;
+		cout << "Beweging counter omhoog" << endl;
+
 
 		if(intervalStart)
 		{
 			time(&intervalStartTime);
 			intervalStart = false;
+			cout << "Interval gestart" << endl;
 		}
 	}
-	else if(sensorValue < 500)
+	else if(sensorValue < 500 && !bedUpdate)
 	{
 		inBed = false;
 		bedUpdate = true;
+		time(&timeOutOfBed);
+		cout << "Uit bed" << endl;
 	}
 
-	if(difftime(time(0),intervalStartTime) > 8000)
+	if(difftime(time(0),intervalStartTime) > 8)
 	{
-
+		cout << "Interval voorbij" << endl;
+		time(&intervalStartTime);
+		movementCounter = 0;
+		intervalStart = true;
 	}
 
-
-	return false;
+	if(movementCounter > 5)
+	{
+		return true; 			//return true als er meer dan 5 bewegingen binnnen het interval worden gedetecteerd
+	}							//dit is gedefinieerd als een detectie van een epilepsieaanval
+	else
+	{
+		return false;
+	}
 }
 
 void Bed::automaticLightOff(int timeUntilOff) {
