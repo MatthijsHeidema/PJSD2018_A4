@@ -22,7 +22,7 @@ int delayval = 500;
 unsigned int outputs = 0;
 
 String received = " ";
-const char* preceived = "";
+char useless[128] = {0};
 char key[32] = {0};
 char value[32] = {0};
 
@@ -66,14 +66,16 @@ void loop() {
 
     while (client.connected()) {
 
-      while (client.available() > 0) {
+      if (client.available() > 0) {
         received = client.readStringUntil('\r');
-        //strncpy(preceived, received.c_str(), 64);
-        preceived = received.c_str();
-        //Serial.println(received);      
+        //strncpy(preceived, "Key:Value", 64);
+        //preceived;
+        //preceived = received.c_str();
+        Serial.println(useless); 
+        //Serial.println();     
       }
       
-     if(!splitInto(preceived, key, value)) {
+     if(!splitInto(received.c_str(), key, value)) {
 
         Serial.print("key: ");
         Serial.print(key);
@@ -97,7 +99,9 @@ void loop() {
           Serial.println("Unknown command");
         }
         
-        //preceived[0] = '\0';
+        received = "";
+      } else {
+        //Serial.println("invalid input");
       }
       
       colorPicker(color_val);
@@ -187,11 +191,10 @@ void confetti()
 }
 
 void colorPicker(const char* color){
-  if(true){
+  if(state){
        if(!strcmp(color,"Green")){
           led[0] = CRGB::Green;
           FastLED.show();
-          Serial.println("Green!");
        }
        if(!strcmp(color,"White")){
           led[0] = CRGB::White;
@@ -220,11 +223,12 @@ void Status(char value[]){
   }
 }
 
-int splitInto(const char* received, char key[64], char value[64]) {
+int splitInto(const char* input, char key[64], char value[64]) {
 
-  const char *tracker = received;     //pointer to go through received
+  //Serial.print("input is:"); Serial.println(input);
+  const char *tracker = input;     //pointer to go through received
   int command = 0;                    //differentiate between key and value
-
+  
   //Empty key and value arrays
   memset(&key[0], 0, 64);
   memset(&value[0], 0, 64);
