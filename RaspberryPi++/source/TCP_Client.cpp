@@ -73,6 +73,7 @@ int TCP_Client::sendString(string str)
 int TCP_Client::sendValue(string key, string value)
 {
 	string sendformat = key + ":" + value + "\r";		//Putting the key and value in json format
+	cout << "Verzonden string: " << sendformat << endl;
 	return sendString(sendformat);									//Sending the key and value. Returning the bytes transmitted or -1 when an error occurs.
 }
 
@@ -82,6 +83,7 @@ const char* TCP_Client::receiveValue(string key)
 	sendString(sendformat);	//First send the key where you want the value from
 
 	buffer[16] = {0};		//clear buffer
+
 	recv(sock, buffer, 16, 0);		//Reading the value from the socket
 	//std::cout << buffer << endl;
 	return buffer;					//returning the value
