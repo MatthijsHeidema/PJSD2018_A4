@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include "Lamp.h"
+#include "Bed.h"
 
 using namespace std;
 
@@ -11,6 +12,7 @@ int main()
 {
 	//Construct devices
 	//Lamp lamp(IP_LAMP, FILE_PATH_LAMP, PORT_LAMP);
+
 	Lamp lamp("172.16.4.4", "/var/www/html/lamp.json" , 3005);
 
 	//Connect to devices

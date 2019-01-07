@@ -20,6 +20,7 @@ public:
 	Device(const char* ip_address, const char* filePath, int port);
 	virtual void sync() = 0;
 	bool connectToServer();
+	bool nighttimeCheck();
 };
 
 #endif /* DEVICE_H_ */
