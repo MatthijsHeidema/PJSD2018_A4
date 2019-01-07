@@ -15,7 +15,7 @@ public:
 	using Device::Device;
 	void sync();
 private:
-	bool seizureDetection(const char* value);
+	bool pressureSensorLogic(const char* value);
 	void automaticLightOff(int timeUntilOff);
 	bool seizureDetected = false;
 	bool inBed = false;
@@ -24,7 +24,7 @@ private:
 	bool intervalStart = true;
 	time_t intervalStartTime;
 	time_t timeLightOn;
-	time_t currentTime;
+	time_t timeOutOfBed;
 };
 
 
