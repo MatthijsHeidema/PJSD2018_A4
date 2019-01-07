@@ -7,7 +7,7 @@
 <body>
 		<ul>
 			<li><a class="active" href="index.html">Timothy</a></li>
-			<li><a href="Bewaker.html">Gaurd</a></li>
+			<li><a href="Bewaker.php">Gaurd</a></li>
 			<li><a href="Verpleegster.html">Nurse</a></li>
 		</ul>
 
