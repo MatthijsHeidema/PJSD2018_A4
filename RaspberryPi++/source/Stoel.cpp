@@ -11,16 +11,11 @@
 void Stoel::sync() {
 
 	file->updateDoc();
-
 	const char* pressureSensor = comm->receiveValue("PressureSensor");
-
 	if(pressureSensorLogic(pressureSensor))
 	{
 		file->edit("EpilepsieAanvalStoel","1");
 	}
-
 	file->updateFile();
-
-
 }
 
