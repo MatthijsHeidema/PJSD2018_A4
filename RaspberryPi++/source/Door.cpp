@@ -15,7 +15,7 @@ void Door::sync()
 	// Get the values
 	file->updateDoc();
 	const char* doorStatus = file->getStringValue("doorStatus");
-	usleep(100000);
+	//(100000);
 	// Sync the values
 	// Read
 	const char* redButton = comm->receiveValue("redButton");
