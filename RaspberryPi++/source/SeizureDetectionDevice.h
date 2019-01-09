@@ -14,15 +14,17 @@ class SeizureDetectionDevice: public Device {
 protected:
 	bool pressureSensorLogic(const char* value);
 	time_t timeOffDevice;
+	time_t timeOnDevice;
+	bool absentTooLong = false;
+	bool onDevice = false;
 public:
 	using Device::Device;
+	bool checkAbsence();
 private:
-	bool onDevice = false;
 	int movementCounter = 0;
 	bool deviceUpdate = false;
-	bool IntervalStart = true;
-	time_t IntervalStartTime;
-
+	bool intervalStart = true;
+	time_t intervalStartTime;
 };
 
 #endif /* SEIZUREDETECTIONDEVICE_H_ */

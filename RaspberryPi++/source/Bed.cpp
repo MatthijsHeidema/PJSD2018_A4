@@ -13,38 +13,44 @@ void Bed::sync() {
 
 	file->updateDoc();
 
-	const char* bedLightToggle = comm->receiveValue("BedLight");
-	//cout << "Licht toggle: " << bedLightToggle << endl;
-	const char* bedLightStatus = file->getStringValue("BedLight");
-	//cout << "Licht status: " << bedLightStatus << endl;
+	string JA = "1";
+	string NEE = "0";
 
+	const char* bedLightToggle = comm->receiveValue("BedLight");
+	const char* bedLightStatus = file->getStringValue("BedLight");
 
 	if(!strcmp(bedLightToggle,"1"))
 	{
-		//cout << "Light toggled" << endl;
 		if(!strcmp(bedLightStatus,"1"))
 		{
 			comm->sendValue("BedLight","0");
-			file->edit("BedLight","0");
+			file->edit("BedLight",NEE);
 			bedLightToggle = "0";
 		}
 		if(!strcmp(bedLightStatus,"0"))
 		{
 			comm->sendValue("BedLight","1");
 			time(&timeBedLightOn);
-			file->edit("BedLight","1");
+			file->edit("BedLight",JA);
 			bedLightToggle = "0";
 		}
 	}
 
 	if(nighttimeCheck())
 	{
-		automaticLightOff(5);
+		automaticLightOff(5, bedLightStatus);
 
 		if(difftime(time(0),timeOffDevice) > 5)
 		{
-			//cout << "Langer dan 5 seconden uit bed" << endl;
-			file->edit("OutOfBed","1");
+			file->edit("OutOfBed",JA);
+			absentTooLong = true;
+		}
+	}
+	else
+	{
+		if(difftime(time(0),timeOffDevice) > 10)
+		{
+			absentTooLong = true;
 		}
 	}
 
@@ -53,8 +59,7 @@ void Bed::sync() {
 	cout << pressureSensor << endl;
 
 	if(pressureSensorLogic(pressureSensor)){
-		//cout << "EPILEPSIE AANVAL" << endl;
-		file->edit("EpilepsieAanvalBed","1");
+		file->edit("EpilepsieJAvalBed",JA);
 	}
 
 	file->updateFile();
@@ -63,11 +68,9 @@ void Bed::sync() {
 
 
 
-void Bed::automaticLightOff(int timeUntilOff) {
+void Bed::automaticLightOff(int timeUntilOff, const char* lightStatus) {
 
-	const char* bedLightStatus = file->getStringValue("BedLight");
-
-	if(difftime(time(0),timeBedLightOn) > timeUntilOff && !strcmp(bedLightStatus,"1"))
+	if(difftime(time(0),timeBedLightOn) > timeUntilOff && !strcmp(lightStatus,"1"))
 	{
 		comm->sendValue("BedLight","0");
 		file->edit("BedLight","0");
