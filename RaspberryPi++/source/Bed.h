@@ -15,16 +15,7 @@ public:
 	using SeizureDetectionDevice::SeizureDetectionDevice;
 	void sync();
 private:
-	/*
-	bool pressureSensorLogic(const char* value);
-	bool inBed = false;
-	int movementCounterBed = 0;
-	bool bedUpdate = false;
-	bool bedIntervalStart = true;
-	time_t bedIntervalStartTime;
-	time_t timeOutOfBed;
-	*/
-	void automaticLightOff(int timeUntilOff);
+	void automaticLightOff(int timeUntilOff, const char* lightStatus);
 	time_t timeBedLightOn;
 
 };

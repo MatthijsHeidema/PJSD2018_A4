@@ -27,7 +27,19 @@ JsonFile::JsonFile(const char* filePath): filePath(filePath){ //Constructor eith
 	updateFile();
 }
 
-int JsonFile::updateDoc() {	//Updates the file with the current contents of file
+JsonFile::JsonFile(const char* filePath, const char* jsonContent): filePath(filePath){
+	doc = new Document;
+	file = new fstream;
+
+	doc->Parse(jsonContent);
+	ofstream newFile;
+	newFile.open(filePath);
+	newFile.close();
+
+	updateFile();
+}
+
+int JsonFile::updateDoc() {	//Updates the doc with the current contents of file
 	string temp;
 	string line;
 
