@@ -42,7 +42,7 @@
 
 				$door = updatePHP(DOOR_PATH);
 	
-				if ($door->{'ToggleDoor'}) {
+				if ($door->{'doorStatus'}) {
 					$doorStatus = "open";
 				} else {
 					$doorStatus = "gesloten";
@@ -53,7 +53,7 @@
 				<h1> Home Automation System for Nurse </h1>
 				
 				<form method="post">
-					<input type="submit" name="ToggleDoor" value="Deur: <?php echo $doorStatus; ?>" />
+					<input type="submit" name="doorStatus" value="Deur: <?php echo $doorStatus; ?>" />
 				</form><br>
 				
 				<table style="width:100%">
@@ -94,12 +94,12 @@
 			
 			<?php 
 			
-				if(array_key_exists('ToggleDoor', $_POST)){
+				if(array_key_exists('doorStatus', $_POST)){
 						
-					if ($door->{'ToggleDoor'}) {
-						$door->{'ToggleDoor'} = "0";
+					if ($door->{'doorStatus'}) {
+						$door->{'doorStatus'} = "0";
 					} else {
-						$door->{'ToggleDoor'} = "1";
+						$door->{'doorStatus'} = "1";
 					}
 					updateJson($door, DOOR_PATH);
 				}
