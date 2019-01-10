@@ -11,7 +11,6 @@
 void Stoel::sync() {
 
 	file->updateDoc();
-
 	string JA = "1";
 	string NEE = "0";
 
@@ -48,10 +47,6 @@ void Stoel::sync() {
 		}
 	}
 
-
-
 	file->updateFile();
-
-
 }
 
