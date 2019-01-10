@@ -12,6 +12,7 @@ using namespace std;
 
 void Door::sync()
 {
+	const char* redLight;
 	// Get the values
 	file->updateDoc();
 	const char* doorStatus = file->getStringValue("doorStatus");
@@ -20,7 +21,14 @@ void Door::sync()
 	// Read
 	const char* redButton = comm->receiveValue("redButton");
 	cout << redButton << endl;
-	const char* redLight = redButton;
+	if(!strcmp(redButton,"2"))
+	{
+		redLight = "1";
+	}
+	else
+	{
+		redLight = "0";
+	}
 	// Write
 	comm->sendValue("doorStatus", doorStatus);
 	comm->sendValue("redLight", redLight);
