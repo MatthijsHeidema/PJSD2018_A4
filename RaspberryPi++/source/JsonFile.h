@@ -13,6 +13,7 @@
 class JsonFile {
 public:
 	JsonFile(const char* filePath);	//Constructor either parses the contents of an existing file or creates a new file with contents {"NULL":"null"} if none is found
+	JsonFile(const char* filePath, const char* jsonContent);
 	int updateFile();			//Updates the file with the current contents of doc
 	int updateDoc();			//Updates the file with the current contents of file
 	void fill(const char* input);

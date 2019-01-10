@@ -8,12 +8,16 @@
 #ifndef BED_H_
 #define BED_H_
 
-#include "Device.h"
+#include "SeizureDetectionDevice.h"
 
-class Bed : public Device { // @suppress("Class has a virtual method and non-virtual destructor")
+class Bed : public SeizureDetectionDevice { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
-	using Device::Device;
+	using SeizureDetectionDevice::SeizureDetectionDevice;
 	void sync();
+private:
+	void automaticLightOff(int timeUntilOff, const char* lightStatus);
+	time_t timeBedLightOn;
+
 };
 
 
