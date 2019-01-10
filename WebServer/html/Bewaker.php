@@ -45,7 +45,7 @@
 			$fridge = updatePHP(FRIDGE_PATH);
 			$door = updatePHP(DOOR_PATH);
 			
-			if ($door->{'ToggleDoor'}) {
+			if ($door->{'doorStatus'}) {
 				$doorStatus = "open";
 			} else {
 				$doorStatus = "gesloten";
@@ -70,13 +70,13 @@
 				</form><br>
 				<?php } ?>
 				
-				<?php if ($bed->{'EpilepsieAanval'}) { ?>
+				<?php if ($bed->{'EpilepsieAanvalBed'}) { ?>
 				Epileptische aanval in bed! <form method="post">
 					<input type="submit" name="Ack_EpilepsyBed" value="Stop Alarm" />
 				</form><br>
 				<?php } ?>
 				
-				<?php if ($chair->{'EpilepsieAanval'}) { ?>
+				<?php if ($chair->{'EpilepsieAanvalStoel'}) { ?>
 				Epileptische aanval op de stoel! <form method="post">
 					<input type="submit" name="Ack_EpilepsyChair" value="Stop Alarm" />
 				</form><br>
@@ -96,7 +96,7 @@
 			</td>
 			<td>
 				<form method="post">
-					<input type="submit" name="ToggleDoor" value="Deur: <?php echo $doorStatus; ?>" />
+					<input type="submit" name="doorStatus" value="Deur: <?php echo $doorStatus; ?>" />
 				</form><br>
 			</td>
 
@@ -114,12 +114,12 @@
 				}
 				
 				if(array_key_exists('Ack_EpilepsyBed', $_POST)){
-					$bed->{'EpilepsieAanval'} = "0";
+					$bed->{'EpilepsieAanvalBed'} = "0";
 					updateJson($bed, BED_PATH);
 				}
 				
 				if(array_key_exists('Ack_EpilepsyChair', $_POST)){
-					$chair->{'EpilepsieAanval'} = "0";
+					$chair->{'EpilepsieAanvalStoel'} = "0";
 					updateJson($chair, CHAIR_PATH);
 				}
 				
@@ -133,12 +133,12 @@
 					updateJson($fridge, FRIDGE_PATH);
 				}
 				
-				if(array_key_exists('ToggleDoor', $_POST)){
+				if(array_key_exists('doorStatus', $_POST)){
 					
-					if ($door->{'ToggleDoor'}) {
-						$door->{'ToggleDoor'} = "0";
+					if ($door->{'doorStatus'}) {
+						$door->{'doorStatus'} = "0";
 					} else {
-						$door->{'ToggleDoor'} = "1";
+						$door->{'doorStatus'} = "1";
 					}
 					updateJson($door, DOOR_PATH);
 				}
