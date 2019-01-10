@@ -15,12 +15,12 @@ class Device { // @suppress("Class has a virtual method and non-virtual destruct
 protected:
 	TCP_Client* comm;
 	JsonFile* file;
-
+	bool nighttimeCheck();
 public:
 	Device(const char* ip_address, const char* filePath, int port);
+	Device(const char* ip_address, const char* filePath, int port, const char* jsonContent);
 	virtual void sync() = 0;
 	bool connectToServer();
-	bool nighttimeCheck();
 };
 
 #endif /* DEVICE_H_ */

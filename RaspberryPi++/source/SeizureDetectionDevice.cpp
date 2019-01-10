@@ -13,15 +13,16 @@ bool SeizureDetectionDevice::pressureSensorLogic(const char* value) {
 	if(sensorValue > 500 && deviceUpdate)
 	{
 		onDevice = true;
+		time(&timeOnDevice);
 		deviceUpdate = false;
+		absentTooLong = false;
 		movementCounter++;
 		cout << "Beweging counter omhoog" << endl;
 
-
-		if(IntervalStart)
+		if(intervalStart)
 		{
-			time(&IntervalStartTime);
-			IntervalStart = false;
+			time(&intervalStartTime);
+			intervalStart = false;
 			cout << "Interval gestart" << endl;
 		}
 	}
@@ -33,12 +34,12 @@ bool SeizureDetectionDevice::pressureSensorLogic(const char* value) {
 		cout << "Uit bed of stoel" << endl;
 	}
 
-	if(difftime(time(0),IntervalStartTime) > 8)
+	if(difftime(time(0),intervalStartTime) > 8)
 	{
 		cout << "Interval voorbij" << endl;
-		time(&IntervalStartTime);
+		time(&intervalStartTime);
 		movementCounter = 0;
-		IntervalStart = true;
+		intervalStart = true;
 	}
 
 	if(movementCounter > 5)
@@ -49,4 +50,8 @@ bool SeizureDetectionDevice::pressureSensorLogic(const char* value) {
 	{
 		return false;
 	}
+}
+
+bool SeizureDetectionDevice::checkAbsence() {
+	return absentTooLong;
 }

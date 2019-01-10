@@ -11,10 +11,8 @@ const char* password =  "kamerplant";
 
 char buffer_array[5];
 int analog[2];
-int previousSwitchStatus;
 String request;
-unsigned char schakelaar;
-const char* analogValueString, switchStatusChange = "0";
+const char* analogValueString;
 
 WiFiServer wifiServer(3000);
 
@@ -26,10 +24,10 @@ void setup() {
 
   delay(1000);
 
-  setDDR(0x01);
-  setOutput(0x01,UIT);     
+  setDDR(0x02);
+  setOutput(0x02,UIT);     
      
-  IPAddress ip(10,10,10,20); // where xx is the desired IP Address
+  IPAddress ip(10,10,10,21); // where xx is the desired IP Address
   //IPAddress ip(192,168,4,9);
   IPAddress gateway(10,10,10,1); // set gateway to match your network 
   //IPAddress gateway(192,168,4,1);
@@ -39,8 +37,7 @@ void setup() {
 
   WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) 
-  {
+  while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting..");
   }
@@ -48,12 +45,14 @@ void setup() {
   Serial.print("Connected to WiFi. IP:");
   Serial.println(WiFi.localIP());
 
-  wifiServer.begin();   
+  wifiServer.begin();  
+
+  
   
 }
 
-void loop() {
-
+void loop() 
+{
 
   WiFiClient client = wifiServer.available();
 
@@ -70,22 +69,14 @@ void loop() {
         Serial.println(request);       
       }
 
-      if(!strcmp(request.c_str(),"BedLight?"))
+      if(!strcmp(request.c_str(),"ChairVibrate:1"))
       {
-        client.write(switchStatusChange,sizeof(switchStatusChange));     
-        request = "";
-        switchStatusChange = "0";
-      }
-      if(!strcmp(request.c_str(),"BedLight:1"))
-      {
-        Serial.println("in if van licht aan");
-        setOutput(0x01,AAN);
+        setOutput(0x02,AAN);
         request = "";    
       }
-      if(!strcmp(request.c_str(),"BedLight:0"))
+      if(!strcmp(request.c_str(),"ChairVibrate:0"))
       {
-        Serial.println("in if van licht uit");
-        setOutput(0x01,UIT);
+        setOutput(0x02,UIT);
         request = "";        
       }
       if(!strcmp(request.c_str(),"PressureSensor?"))
@@ -97,24 +88,14 @@ void loop() {
             
       readAnalog(analog); 
       analogValueString = itoa(analog[0], buffer_array, 10);
-      
-      int switchStatus = readSwitch(1);       
-      
-      if(switchStatus == 0 && previousSwitchStatus == 1)
-      {
-        switchStatusChange = "1";
-        Serial.println("Knop gedrukt");
-      }
-      
-      previousSwitchStatus = switchStatus;
-      
+     
     }
+      
+      client.stop();
+      Serial.println("Client disconnected");
+  }
+}  
 
-    client.stop();
-    Serial.println("Client disconnected");
-    
-  }  
-}
 
 void setDDR(int IO){
   
@@ -174,8 +155,7 @@ void setOutput(int output_address, bool output_status){
     Wire.write(byte(0 << 4));            
     Wire.endTransmission();
     Serial.println("Licht uit");
-  }
-  
+  } 
   
 }
 
