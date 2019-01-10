@@ -23,6 +23,7 @@
 			define("PILLAR_PATH", "pillar.json");
 			define("FRIDGE_PATH", "fridge.json");
 			define("DOOR_PATH", "door.json");
+			define("MAIN_PATH", "main.json");
 			
 			function updatePHP($path) {
 				$jsonFile = fopen($path, "r") or die("Unable to open file");
@@ -44,6 +45,7 @@
 			$pillar = updatePHP(PILLAR_PATH);
 			$fridge = updatePHP(FRIDGE_PATH);
 			$door = updatePHP(DOOR_PATH);
+			$main = updatePHP(MAIN_PATH);
 			
 			if ($door->{'doorStatus'}) {
 				$doorStatus = "open";
@@ -61,12 +63,6 @@
 				<?php if ($bed->{'OutOfBed'}) { ?>
 				Client is te lang uit bed! <form method="post">
 					<input type="submit" name="Ack_OutOfBed" value="Stop Alarm" />
-				</form><br>
-				<?php } ?>
-				
-				<?php if ($bed->{'OutOfBed'} and $chair->{'NotInChair'}) { ?>
-				Client niet in bed of op de stoel! <form method="post">
-					<input type="submit" name="Ack_Missing" value="Stop Alarm" />
 				</form><br>
 				<?php } ?>
 				
@@ -93,6 +89,12 @@
 					<input type="submit" name="Ack_Fridge" value="Stop Alarm" />
 				</form><br>
 				<?php } ?>
+				
+				<?php if ($main->{'TooLongAbsent'}) { ?>
+				Client te lang niet gedetecteerd! <form method="post">
+					<input type="submit" name="Ack_Missing" value="Stop Alarm" />
+				</form><br>
+				<?php } ?>
 			</td>
 			<td>
 				<form method="post">
@@ -108,9 +110,8 @@
 				}
 				
 				if(array_key_exists('Ack_Missing', $_POST)){
-					$bed->{'OutOfBed'} = "0";
-					$chair->{'NotInChair'} = "0";
-					updateJson($bed, BED_PATH);
+					$main->{'TooLongAbsent'} = "0";
+					updateJson($main, MAIN_PATH);
 				}
 				
 				if(array_key_exists('Ack_EpilepsyBed', $_POST)){
