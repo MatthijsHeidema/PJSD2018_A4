@@ -4,10 +4,12 @@
 #define AAN true
 #define UIT false
 
-const char* ssid = "RaspberryA4";
-const char* password =  "kamerplant";
-//const char* ssid = "PIWORKS";
-//const char* password = "PInetPASSword123";
+IPAddress ip(172, 16, 4, 11);
+IPAddress gateway (172, 16, 4, 1);
+IPAddress subnet(255, 255, 255, 0);
+
+const char* ssid     = "WinnieThePi";
+const char* password = "3114800R";
 
 char buffer_array[5];
 int analog[2];
@@ -29,12 +31,7 @@ void setup() {
 
   setDDR(0x01);
   setOutput(0x01,UIT);     
-     
-  IPAddress ip(10,10,10,20); // where xx is the desired IP Address
-  //IPAddress ip(192,168,4,9);
-  IPAddress gateway(10,10,10,1); // set gateway to match your network 
-  //IPAddress gateway(192,168,4,1);
-  IPAddress subnet(255, 255, 255, 0); // set subnet mask to match your network
+  
   WiFi.config(ip, gateway, subnet);
 
   WiFi.mode(WIFI_STA);

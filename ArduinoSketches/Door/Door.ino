@@ -9,8 +9,12 @@
 
 int button1 = 0;
 
-const char* ssid = "PIWORKS";
-const char* password =  "PInetPASSword123";
+IPAddress ip(172, 16, 4, 10);
+IPAddress gateway (172, 16, 4, 1);
+IPAddress subnet(255, 255, 255, 0);
+
+const char* ssid     = "WinnieThePi";
+const char* password = "3114800R";
 String received;
 char key[64];
 char value[64];
@@ -21,10 +25,6 @@ const char* ValueString;
 int analogValues[2];
 void Status(char value[]);
 void wifiSetup();
-
-IPAddress ip(192, 168, 4, 10); // where xx is the desired IP Address
-IPAddress gateway(192, 168, 4, 1); // set gateway to match your network
-IPAddress subnet(255, 255, 255, 0); // set subnet mask to match your network
 
 WiFiServer wifiServer(3010);
 Servo myservo;  // create servo object to control a servo

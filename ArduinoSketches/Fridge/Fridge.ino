@@ -67,7 +67,7 @@ void loop() {
         } else if(!strcmp(key, "PeltierTemp")) {
           //send temperature
           readAnalog(analog);
-          itoa(analog[0], temp_buffer, 10);
+          itoa(analog[0], temp_buffer, 12);
           Serial.println(temp_buffer);
           client.write(temp_buffer, 16);
         
