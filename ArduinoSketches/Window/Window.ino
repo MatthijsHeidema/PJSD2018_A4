@@ -25,6 +25,8 @@ const char* analogValueString;
 void ledsSetup();
 void Status(char value[]);
 void wifiSetup();
+void setDDR(int IO);
+void writeToOutput(byte outputs);
 
 IPAddress ip(192, 168, 4, 5); // where xx is the desired IP Address
 IPAddress gateway(192, 168, 4, 1); // set gateway to match your network
@@ -36,7 +38,9 @@ void setup() {
   Wire.begin();                         // Starting the I2C communication
   Serial.begin(115200);                 // Starting the I2C communication
   wifiSetup();                          // Starting the WiFi server
-  ledsSetup();                            //Starting the LED's
+  ledsSetup();                          //Starting the LED's
+  setDDR(0x01);
+  writeToOutput(0);
 }
 
 void loop() {
@@ -65,9 +69,11 @@ void loop() {
 
         } else if (!strcmp(key, "analog0"))
         {
+          readFromAnalog(analogValues);
           analogValueString = itoa(analogValues[0], buffer_array, 10);
-          client.write(analogValueString,5);
-          
+          Serial.println(analogValueString);
+          client.write(analogValueString, 5);
+
         } else if (!strcmp(key, "windowStatus"))
         {
           Status(value);
@@ -82,9 +88,7 @@ void loop() {
         {
           Serial.println("Unknown command");
         }
-      } else
-      {
-        Serial.println("Invalid input");
+        received = "";
       }
     }
   }
@@ -174,8 +178,8 @@ void ledsSetup()
 {
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(96);
-  leds[0] = CRGB::Blue;
-  leds[1] = CRGB::Yellow;
+  leds[0] = CRGB::White;
+  leds[1] = CRGB::White;
   leds[2] = CRGB::White;
   FastLED.show();
 }
@@ -186,17 +190,15 @@ void ledsBrightness(int brightness)
   FastLED.show();
 }
 
-/*
-  void loop() {
-  readFromAnalog(analogValues);
-  Serial.println(analogValues[0]);
-  int changed = map(analogValues[0], 0, 1023, 0, 255);
-  Serial.println(changed);
-  FastLED.setBrightness(changed);
-  //writeToOutput(00000001);
-  //delay(2);
-  //writeToOutput(00000000);
-  //delay(5);
-  FastLED.show();
-  }*/
+void setDDR(int IO) {
 
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x03));
+  Wire.write(byte(IO));
+  Wire.endTransmission();
+
+  Wire.beginTransmission(0x36);
+  Wire.write(byte(0xA2));
+  Wire.write(byte(0x03));
+  Wire.endTransmission();
+}
