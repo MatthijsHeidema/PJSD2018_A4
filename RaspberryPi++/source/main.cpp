@@ -17,7 +17,7 @@ int main()
 	//Construct JSON object for main
 	JsonFile main(FILE_PATH_MAIN, JSON_MAIN);
 
-	Lamp lamp(IP_LAMP, FILE_PATH_LAMP , 3000, JSON_LAMP);
+	Lamp lamp(IP_LAMP, FILE_PATH_LAMP , 3005, JSON_LAMP);
 	Bed bed(IP_BED, FILE_PATH_BED, 3000, JSON_BED);
 	Stoel chair(IP_CHAIR, FILE_PATH_CHAIR, 3000, JSON_CHAIR);
 	Door door(IP_DOOR, FILE_PATH_DOOR, 3000, JSON_DOOR);
@@ -41,6 +41,11 @@ int main()
 		fridge.sync();
 		window.sync();
 		usleep(100000);
+
+		if(bed.checkAbsence() && chair.checkAbsence())
+		{
+			main.edit("TooLongAbsent","1");
+		}
 	}
 
 	return 0;

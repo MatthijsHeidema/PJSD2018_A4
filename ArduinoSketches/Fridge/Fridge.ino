@@ -6,12 +6,14 @@
 #define AAN 1
 #define UIT 0
 
-WiFiServer wifiServer(3020);
-const char* ssid = "WinnieThePi";
-const char* password = "3114800R";
-IPAddress ip(172, 16, 4, 20);
+WiFiServer wifiServer(3000);
+
+IPAddress ip(172, 16, 4, 12);
 IPAddress gateway (172, 16, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
+
+const char* ssid     = "WinnieThePi";
+const char* password = "3114800R";
 
 String received;
 char key[64] = {0};
@@ -67,7 +69,7 @@ void loop() {
         } else if(!strcmp(key, "PeltierTemp")) {
           //send temperature
           readAnalog(analog);
-          itoa(analog[0], temp_buffer, 12);
+          itoa(analog[0], temp_buffer, 10);
           Serial.println(temp_buffer);
           client.write(temp_buffer, 16);
         
