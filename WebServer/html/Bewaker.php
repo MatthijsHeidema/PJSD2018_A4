@@ -24,6 +24,7 @@
 			define("FRIDGE_PATH", "fridge.json");
 			define("DOOR_PATH", "door.json");
 			define("MAIN_PATH", "main.json");
+			define("WINDOW_PATH", "window.json");
 
 			function updatePHP($path) {
 				$jsonFile = fopen($path, "r") or die("Unable to open file");
@@ -46,6 +47,7 @@
 			$fridge = updatePHP(FRIDGE_PATH);
 			$door = updatePHP(DOOR_PATH);
 			$main = updatePHP(MAIN_PATH);
+			$window = updatePHP(WINDOW_PATH);
 
 			if ($door->{'doorStatus'}) {
 				$doorStatus = "open";
@@ -54,7 +56,8 @@
 			}
 
 			$updateTimeDay = $bed->{'updateTimeDay'};
-			$updateTimeNight = $bed->{'updateTimeNight'}; 
+			$updateTimeNight = $bed->{'updateTimeNight'};
+			$windowStatus = $window->{'windowStatus'};
 		?>
 
 		<h1> Home Automation System for Security Guard </h1></br>
@@ -111,6 +114,8 @@
 					<input type="submit" value="Tijd voor melding 's nachts: <?php echo $updateTimeNight; ?>" />
 					<input type="number" style="width: 7em" name="updateTimeNight" id="updateTimeNight" min="0" max="3600" /><br>
 				</form>
+				<form method="post">
+					<input type="submit" name="windowStatus" value="windowStatus: <?php echo $windowStatus;?>"/>
 			</td>
 
 
@@ -169,6 +174,18 @@
 					$chair->{'updateTimeNight'} = (int)$_POST["updateTimeNight"];
 					updateJson($bed, BED_PATH);
 					updateJson($chair, CHAIR_PATH);
+				}
+
+				if(array_key_exists('windowStatus', $_POST))
+				{
+					if ($window->{'windowStatus'}) {
+						$window->{'windowStatus'} = "0";
+						$window->{'aangepast'} = "0";
+					} else {
+						$window->{'windowStatus'} = "1";
+						$window->{'aangepast'} = "1";
+					}
+					updateJson($window, WINDOW_PATH);
 				}
 		?>
 </body>
