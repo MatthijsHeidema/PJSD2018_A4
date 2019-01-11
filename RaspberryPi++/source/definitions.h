@@ -31,11 +31,11 @@
 
 #define FILE_PATH_WINDOW "/var/www/html/window.json"
 #define IP_WINDOW "192.168.4.8"
-#define JSON_WINDOW
+#define JSON_WINDOW "{\"windowStatus\":\"0\",\"aangepast\":\"0\",\"ledBrightness\":\"0\"}"
 
 #define FILE_PATH_FRIDGE "/var/www/html/fridge.json"
-#define IP_GRIDGE "192.168.4.9"
-#define JSON_FRIDGE
+#define IP_FRIDGE "192.168.4.9"
+#define JSON_FRIDGE "{\"OpenTooLong\":\"0\"}"
 
 #define FILE_PATH_COLUMN "/var/www/html/column.json"
 #define IP_COLUMN "192.168.4.11"
