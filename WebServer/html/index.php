@@ -17,9 +17,10 @@
 				<?php
 					ini_set('display_errors', 'On');
 					error_reporting(E_ALL);
-					
+
 					define("LAMP_PATH", "lamp.json");
-					
+					define("WINDOW_PATH", "window.json");
+
 					function updatePHP($path) {
 						$jsonFile = fopen($path, "r") or die("Unable to open file");
 						$jsonString = fread($jsonFile, filesize($path));
@@ -44,13 +45,16 @@
 						updateJson($jsonObject, $path);
 					}
 
+					$window = updatePHP(WINDOW_PATH);
 					$lamp = updatePHP(LAMP_PATH);
-					
+
+					$windowStatus = $window->{'windowStatus'};
 					if ($lamp->{'ToggleLed'}) {
 						$lampStatus = "aan";
 					} else {
 						$lampStatus = "uit";
 					}
+
 				?>
 
 				<p>
@@ -64,9 +68,25 @@
 						<input type="radio" name="Color_lamp" value="Green" /> Green <br>
 						<input type="radio" name="Color_lamp" value="Red" /> Red <br>
 						<input type="radio" name="Color_lamp" value="Blue" /> Blue <br>
-						<input type="radio" name="Color_lamp" value="Yellow" /> Yellow <br> 
+						<input type="radio" name="Color_lamp" value="Yellow" /> Yellow <br>
 						<input type="submit"/> <br>
 					</form>
+					<form method="post">
+						<input type="submit" name="windowStatus" value="windowStatus: <?php echo $windowStatus;?>"/>
+					</form>
+
+					<div class="""slidecontainer">
+	  				<input type="range" min="1" max="100" value="50" class="slider" id="slider">
+	  				<p>Value: <span id="demo"></span></p>
+					</div>
+					<script>
+						var slider = document.getElementById("slider");
+						var output = document.getElementById("demo");
+						output.innerHTML = slider.value;
+						slider.oninput = function() {
+	  				output.innerHTML = this.value;
+						}
+					</script>
 				</p>
 
 				<?php
@@ -76,6 +96,18 @@
 					if(array_key_exists('Color_lamp', $_POST)){
 						$lamp->{'Color'} = $_POST["Color_lamp"];
 						updateJson($lamp, LAMP_PATH);
+					}
+
+					if(array_key_exists('windowStatus', $_POST))
+					{
+						if ($window->{'windowStatus'}) {
+							$window->{'windowStatus'} = "0";
+							$window->{'aangepast'} = "1";
+						} else {
+							$window->{'windowStatus'} = "1";
+							$window->{'aangepast'} = "1";
+						}
+						updateJson($window, WINDOW_PATH);
 					}
 				?>
 			</main>

@@ -18,6 +18,8 @@ void Bed::sync() {
 
 	const char* bedLightToggle = comm->receiveValue("BedLight");
 	const char* bedLightStatus = file->getStringValue("BedLight");
+	int notificationTimeDay = file->getIntValue("updateTimeDay");
+	int notificationTimeNight = file->getIntValue("updateTimeNight");
 
 	if(!strcmp(bedLightToggle,"1"))
 	{
@@ -40,18 +42,30 @@ void Bed::sync() {
 	{
 		automaticLightOff(5, bedLightStatus);
 
-		if(difftime(time(0),timeOffDevice) > 5)
+		if(nightUpdate){
+			cout << "Aantal keer uit bed: " << outOfBedCount << endl;
+			file->edit("OutOfBedCount",outOfBedCount);
+			outOfBedCount = 0;
+			nightUpdate = false;
+			time(&timeOffDevice);
+		}
+
+		if(difftime(time(0),timeOffDevice) > notificationTimeNight)
 		{
 			file->edit("OutOfBed",JA);
 			absentTooLong = true;
+			outOfBedCount++;
+			cout << "Out of bed count omhoog" << endl;
+			time(&timeOffDevice);
 		}
 	}
 	else
 	{
-		if(difftime(time(0),timeOffDevice) > 10)
+		if(difftime(time(0),timeOffDevice) > notificationTimeDay)
 		{
 			absentTooLong = true;
 		}
+		nightUpdate = true;
 	}
 
 
@@ -59,7 +73,7 @@ void Bed::sync() {
 	cout << pressureSensor << endl;
 
 	if(pressureSensorLogic(pressureSensor)){
-		file->edit("EpilepsieJAvalBed",JA);
+		file->edit("EpilepsieAanvalBed",JA);
 	}
 
 	file->updateFile();

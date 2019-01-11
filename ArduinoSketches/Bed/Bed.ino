@@ -14,7 +14,8 @@ int analog[2];
 int previousSwitchStatus;
 String request;
 unsigned char schakelaar;
-const char* analogValueString, switchStatusChange = "0";
+const char* analogValueString;
+const char* switchStatusChange = "0";
 
 WiFiServer wifiServer(3000);
 
@@ -36,7 +37,7 @@ void setup() {
   IPAddress subnet(255, 255, 255, 0); // set subnet mask to match your network
   WiFi.config(ip, gateway, subnet);
 
-
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) 
@@ -178,4 +179,3 @@ void setOutput(int output_address, bool output_status){
   
   
 }
-

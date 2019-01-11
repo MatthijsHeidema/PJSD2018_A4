@@ -15,6 +15,7 @@
 				error_reporting(E_ALL);
 				
 				define("DOOR_PATH", "door.json");
+				define("BED_PATH", "bed.json");
 				
 				function updatePHP($path) {
 					$jsonFile = fopen($path, "r") or die("Unable to open file");
@@ -41,8 +42,10 @@
 				}
 
 				$door = updatePHP(DOOR_PATH);
+				$bed = updatePHP(BED_PATH);
+				$OutOfBedCount = $bed->{'OutOfBedCount'};
 	
-				if ($door->{'ToggleDoor'}) {
+				if ($door->{'doorStatus'}) {
 					$doorStatus = "open";
 				} else {
 					$doorStatus = "gesloten";
@@ -53,53 +56,23 @@
 				<h1> Home Automation System for Nurse </h1>
 				
 				<form method="post">
-					<input type="submit" name="ToggleDoor" value="Deur: <?php echo $doorStatus; ?>" />
+					<input type="submit" name="doorStatus" value="Deur: <?php echo $doorStatus; ?>" />
 				</form><br>
 				
-				<table style="width:100%">
-					<tr>
-						<th>SleepCycle</th>
-						<th>SitCycle</th>
-						<th>Cycle</th>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-				</table>
+				<p>Uw patient is afgelopen nacht <?php echo $OutOfBedCount ?> keer uit bed geweest.</p>
+				
 			</main>
 
 			</br>
 			
 			<?php 
 			
-				if(array_key_exists('ToggleDoor', $_POST)){
+				if(array_key_exists('doorStatus', $_POST)){
 						
-					if ($door->{'ToggleDoor'}) {
-						$door->{'ToggleDoor'} = "0";
+					if ($door->{'doorStatus'}) {
+						$door->{'doorStatus'} = "0";
 					} else {
-						$door->{'ToggleDoor'} = "1";
+						$door->{'doorStatus'} = "1";
 					}
 					updateJson($door, DOOR_PATH);
 				}
