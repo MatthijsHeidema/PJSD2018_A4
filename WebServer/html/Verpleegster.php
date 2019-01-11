@@ -15,6 +15,7 @@
 				error_reporting(E_ALL);
 				
 				define("DOOR_PATH", "door.json");
+				define("BED_PATH", "bed.json");
 				
 				function updatePHP($path) {
 					$jsonFile = fopen($path, "r") or die("Unable to open file");
@@ -41,6 +42,8 @@
 				}
 
 				$door = updatePHP(DOOR_PATH);
+				$bed = updatePHP(BED_PATH);
+				$OutOfBedCount = $bed->{'OutOfBedCount'};
 	
 				if ($door->{'doorStatus'}) {
 					$doorStatus = "open";
@@ -55,6 +58,8 @@
 				<form method="post">
 					<input type="submit" name="doorStatus" value="Deur: <?php echo $doorStatus; ?>" />
 				</form><br>
+				
+				<p>Uw patient is afgelopen nacht <?php echo $OutOfBedCount ?> keer uit bed geweest.</p>
 				
 				<table style="width:100%">
 					<tr>
