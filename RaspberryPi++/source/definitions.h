@@ -38,7 +38,7 @@
 #define JSON_FRIDGE "{\"OpenTooLong\":\"0\"}"
 
 #define FILE_PATH_COLUMN "/var/www/html/column.json"
-#define IP_COLUMN "192.168.4.10"
-#define JSON_COLUMN
+#define IP_COLUMN "192.168.4.11"
+#define JSON_COLUMN "{\"RookMelderStatus\":\"0\",\"RookSensor\":\"0\"}"
 
 #endif /* DEFINITIONS_H_ */

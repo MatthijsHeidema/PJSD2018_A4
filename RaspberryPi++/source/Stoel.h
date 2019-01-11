@@ -10,7 +10,7 @@
 
 #include "SeizureDetectionDevice.h"
 
-class Stoel: public SeizureDetectionDevice {
+class Stoel: public SeizureDetectionDevice { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
 	using SeizureDetectionDevice::SeizureDetectionDevice;
 	void sync();
