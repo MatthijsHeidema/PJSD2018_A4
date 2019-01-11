@@ -17,6 +17,8 @@ public:
 private:
 	void automaticLightOff(int timeUntilOff, const char* lightStatus);
 	time_t timeBedLightOn;
+	int outOfBedCount = 0;
+	bool nightUpdate = true;
 
 };
 
