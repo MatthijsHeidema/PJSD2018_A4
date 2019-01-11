@@ -3,27 +3,43 @@
 
 #define I2C_SDL D1
 #define I2C_SDA D2
+#define AAN 1
+#define UIT 0
 
-WiFiServer wifiServer(3005);
-const char* ssid = "";
-const char* password = "";
-IPAddress ip(192, 168, 4, 16);
-IPAddress gateway (192, 168, 4, 1);
+WiFiServer wifiServer(3020);
+const char* ssid = "WinnieThePi";
+const char* password = "3114800R";
+IPAddress ip(172, 16, 4, 20);
+IPAddress gateway (172, 16, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-const char* received = "";
-char key[64] = "";
-char value[64] = "";
+String received;
+char key[64] = {0};
+char value[64] = {0};
+char temp_buffer[16] = {0};
+char door_buffer[16] = {0};
 
 int analog[2] = {0};
-int set_temp = 0;
-int cur_temp = 0;
+int coolingOn = 1;
+int doorSwitch = 0;
+
+//functions
+void setDDR(int IO);
+void setOutput(int output_address, bool output_status);
+void wemosFi();
+int readSwitch(int switch_bit);
+int readAnalog(int* analog_values);
+int splitInto(const char* received, char key[64], char value[64]);
+
+
 
 void setup() {
   Serial.begin(115200);
   delay(10);
   Wire.begin();
   pinMode(D5, OUTPUT);
+  setDDR(0x01);
+  setOutput(0x01, UIT);
   wemosFi();
 }
 
@@ -35,43 +51,60 @@ void loop() {
     while(client.connected()) {
 
       while(client.available() > 0) {
-        received = client.readStringUntil('\r').c_str();
+        received = client.readStringUntil('\r');
       }
 
-      if(!splitInto(received, key, value)) {
-
+      if(!splitInto(received.c_str(), key, value)) {
+        
         if(!strcmp(key, "Door")) {
           //send Door value
+          doorSwitch = readSwitch(1);
+          itoa(doorSwitch, door_buffer, 10);
+          Serial.println(door_buffer);
+          client.write(door_buffer, 16);
+          
         
-        } else if(!strcmp(key, "Temp") && !strcmp(value, "?")) {
+        } else if(!strcmp(key, "PeltierTemp")) {
           //send temperature
+          readAnalog(analog);
+          itoa(analog[0], temp_buffer, 10);
+          Serial.println(temp_buffer);
+          client.write(temp_buffer, 16);
         
-        } else if(!strcmp(key, "Temp")) {
-          set_temp = atoi(value);
+        } else if(!strcmp(key, "FanTemp")) {
+          readAnalog(analog);
+          itoa(analog[1], temp_buffer, 10);
+          Serial.println(temp_buffer);
+          client.write(temp_buffer, 16);
         
-        } else {
-          Serial.println("Unknown command!");
+        }else if(!strcmp(key, "Cooling")) {          
+          if (!strcmp(value, "1")) {
+            //peltier
+            Serial.println("Cooling");
+            analogWrite(D5, 255);
+          } else {
+            //peltier off
+            Serial.println("Not cooling");
+            analogWrite(D5, 0);
+          }
+        
+        } else if (!strcmp(key, "Fan")) {
+          if (!strcmp(value, "1")) {
+            setOutput(0x01, AAN);
+          } else {
+            setOutput(0x01, UIT);
+          }
         }
+
+        received = "";
       
       } else {
-        Serial.println("Invalid input");
+        //
       }
-
-      delay(250);
     }
 
     client.stop();
     Serial.println("Client disconnected");
-  }
-
-  readAnalog(analog);
-
-  cur_temp = analog[0];
-
-  if(cur_temp > set_temp) {
-    //peltier on
-  } else {
-    //peltier off
   }
 }
 
@@ -134,7 +167,7 @@ int splitInto(const char* received, char key[64], char value[64]) {
   return 1;
 }
 
-void readAnalog(int* analog_values){
+int readAnalog(int* analog_values){
   
   Wire.requestFrom(0x36, 4);   
   unsigned int anin0 = Wire.read()&0x03;  
@@ -144,14 +177,54 @@ void readAnalog(int* analog_values){
   unsigned int anin1 = Wire.read()&0x03;  
   anin1=anin1<<8;
   anin1 = anin1|Wire.read();
-  /*
-  Serial.print("analog in 0: ");
-  Serial.println(anin0);    
-  Serial.println("");
-  Serial.print("analog in 1: ");
-  Serial.println(anin1);   
-  Serial.println("");
-  */
+
   analog_values[0] = anin0;
   analog_values[1] = anin1;
+  return anin1;
+}
+
+int readSwitch(int switch_bit){
+  
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x00));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);
+  int all_switches = Wire.read();
+  int switch_address = 0;
+  switch_address = 1 << (switch_bit - 1);
+  int single_switch = all_switches & switch_address;
+
+  return single_switch;
+}
+
+
+void setDDR(int IO){
+  
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x03));          
+  Wire.write(byte(IO));         
+  Wire.endTransmission();
+
+  Wire.beginTransmission(0x36);
+  Wire.write(byte(0xA2));          
+  Wire.write(byte(0x03));  
+  Wire.endTransmission();
+}
+
+void setOutput(int output_address, bool output_status){
+  
+  if(output_status == AAN){    
+    Wire.beginTransmission(0x38); 
+    Wire.write(byte(0x01));            
+    Wire.write(byte(output_address << 4));            
+    Wire.endTransmission();
+    Serial.println("Licht aan");
+  }
+  if(output_status == UIT){
+    Wire.beginTransmission(0x38); 
+    Wire.write(byte(0x01));            
+    Wire.write(byte(0 << 4));            
+    Wire.endTransmission();
+    Serial.println("Licht uit");
+  } 
 }
