@@ -61,38 +61,6 @@
 				
 				<p>Uw patient is afgelopen nacht <?php echo $OutOfBedCount ?> keer uit bed geweest.</p>
 				
-				<table style="width:100%">
-					<tr>
-						<th>SleepCycle</th>
-						<th>SitCycle</th>
-						<th>Cycle</th>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-					<tr>
-						<td>"    "</td>
-						<td>"    "</td>
-						<td>"    "</td>
-					</tr>
-				</table>
 			</main>
 
 			</br>
