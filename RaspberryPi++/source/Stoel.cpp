@@ -16,6 +16,11 @@ void Stoel::sync() {
 
 	const char* pressureSensor = comm->receiveValue("PressureSensor");
 	const char* vibrateStatus = file->getStringValue("StoelTril");
+	int notificationTimeDay = file->getIntValue("updateTimeDay");
+	int notificationTimeNight = file->getIntValue("updateTimeNight");
+
+	cout << "Delay tijd dag: " << notificationTimeDay << endl;
+	cout << "Delay tijd nacht: " << notificationTimeNight << endl;
 
 	if(pressureSensorLogic(pressureSensor))
 	{
@@ -24,11 +29,11 @@ void Stoel::sync() {
 
 	if(nighttimeCheck())
 	{
-		if(difftime(time(0),timeOffDevice) > 5 && !onDevice)
+		if(difftime(time(0),timeOffDevice) > notificationTimeDay && !onDevice)
 		{
 			absentTooLong = true;
 		}
-		if(difftime(time(0),timeOnDevice) > 5 && onDevice)
+		if(difftime(time(0),timeOnDevice) > notificationTimeDay && onDevice)
 		{
 			comm->sendValue("ChairVibrate","1");
 			file->edit("StoelTril",JA);
@@ -41,7 +46,7 @@ void Stoel::sync() {
 	}
 	else
 	{
-		if(difftime(time(0),timeOffDevice) > 10 && !onDevice)
+		if(difftime(time(0),timeOffDevice) > notificationTimeNight && !onDevice)
 		{
 			absentTooLong = true;
 		}
