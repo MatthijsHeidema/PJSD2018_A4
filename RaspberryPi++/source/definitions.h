@@ -35,7 +35,7 @@
 #define JSON_DOOR "{\"doorStatus\":\"0\"}"
 
 #define FILE_PATH_WINDOW "/var/www/html/window.json"
-#define JSON_WINDOW "{\"windowStatus\":\"0\", \"aangepast\":\"0\", \"ledBrightness\":\"0\"}"
+#define JSON_WINDOW "{\"windowStatus\":\"0\",\"aangepast\":\"0\",\"ledBrightness\":\"0\"}"
 
 #define FILE_PATH_FRIDGE "/var/www/html/fridge.json"
 #define JSON_FRIDGE "{\"OpenTooLong\":\"0\"}"

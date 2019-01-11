@@ -16,6 +16,10 @@ public:
 	using Device::Device;
 	void sync();
 
+private:
+	bool mode;
+	time_t timeChanged;
+	void setWindow(int lichtSensor);
 };
 
 
