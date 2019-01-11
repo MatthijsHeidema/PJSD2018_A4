@@ -31,7 +31,7 @@
 
 #define FILE_PATH_WINDOW "/var/www/html/window.json"
 #define IP_WINDOW "192.168.4.8"
-#define JSON_WINDOW
+#define JSON_WINDOW "{\"windowStatus\":\"0\",\"aangepast\":\"0\",\"ledBrightness\":\"0\"}"
 
 #define FILE_PATH_FRIDGE "/var/www/html/fridge.json"
 #define IP_GRIDGE "192.168.4.9"
