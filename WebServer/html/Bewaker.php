@@ -116,6 +116,20 @@
 				</form>
 				<form method="post">
 					<input type="submit" name="windowStatus" value="windowStatus: <?php echo $windowStatus;?>"/>
+				</form>
+
+				<div class="""slidecontainer">
+  				<input type="range" min="1" max="100" value="50" class="slider" id="slider">
+  				<p>Value: <span id="demo"></span></p>
+				</div>
+				<script>
+					var slider = document.getElementById("slider");
+					var output = document.getElementById("demo");
+					output.innerHTML = slider.value;
+					slider.oninput = function() {
+  				output.innerHTML = this.value;
+					}
+				</script>
 			</td>
 
 
@@ -180,7 +194,7 @@
 				{
 					if ($window->{'windowStatus'}) {
 						$window->{'windowStatus'} = "0";
-						$window->{'aangepast'} = "0";
+						$window->{'aangepast'} = "1";
 					} else {
 						$window->{'windowStatus'} = "1";
 						$window->{'aangepast'} = "1";
