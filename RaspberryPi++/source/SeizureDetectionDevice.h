@@ -10,7 +10,7 @@
 
 #include "Device.h"
 
-class SeizureDetectionDevice: public Device {
+class SeizureDetectionDevice: public Device { // @suppress("Class has a virtual method and non-virtual destructor")
 protected:
 	bool pressureSensorLogic(const char* value);
 	time_t timeOffDevice;

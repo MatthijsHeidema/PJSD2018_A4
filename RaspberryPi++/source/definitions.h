@@ -41,6 +41,6 @@
 #define JSON_FRIDGE "{\"OpenTooLong\":\"0\"}"
 
 #define FILE_PATH_COLUMN "/var/www/html/column.json"
-#define JSON_COLUMN "{\"SmokeAlarm\":\"0\"}"
+#define JSON_COLUMN "{\"RookMelderStatus\":\"0\",\"RookSensor\":\"0\"}"
 
 #endif /* DEFINITIONS_H_ */
