@@ -19,11 +19,11 @@
 
 #define FILE_PATH_BED "/var/www/html/bed.json"
 #define IP_BED "192.168.4.5"
-#define JSON_BED "{\"BedLight\":\"0\",\"OutOfBed\":\"1\",\"EpilepsieAanvalBed\":\"0\"}"
+#define JSON_BED "{\"BedLight\":\"0\",\"OutOfBed\":\"1\",\"OutOfBedCount\":0,\"EpilepsieAanvalBed\":\"0\",\"updateTimeDay\":15,\"updateTimeNight\":10}"
 
 #define FILE_PATH_CHAIR "/var/www/html/chair.json"
 #define IP_CHAIR "192.168.4.6"
-#define JSON_CHAIR "{\"EpilepsieAanvalStoel\":\"0\",\"StoelTril\":\"0\"}"
+#define JSON_CHAIR "{\"EpilepsieAanvalStoel\":\"0\",\"StoelTril\":\"0\",\"updateTimeDay\":15,\"updateTimeNight\":10}"
 
 #define FILE_PATH_DOOR "/var/www/html/door.json"
 #define IP_DOOR "192.168.4.7"
