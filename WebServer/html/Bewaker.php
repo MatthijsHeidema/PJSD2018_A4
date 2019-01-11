@@ -52,6 +52,9 @@
 			} else {
 				$doorStatus = "gesloten";
 			}
+
+			$updateTimeDay = $bed->{'updateTimeDay'};
+			$updateTimeNight = $bed->{'updateTimeNight'}; 
 		?>
 
 		<h1> Home Automation System for Security Guard </h1></br>
@@ -101,12 +104,12 @@
 					<input type="submit" name="doorStatus" value="Deur: <?php echo $doorStatus; ?>" />
 				</form><br><br><br><br>
 				<form method="post">
-					<input type="submit" value="updateTimeDay: <?php echo $updateTimeNight; ?>"<br>
-					<input type="number" name="updateTimeDay" id="updateTimeDay" min="0" max="3600"<br>
+					<input type="submit" value="Tijd voor melding overdag: <?php echo $updateTimeDay; ?>" />
+					<input type="number" style="width: 7em" name="updateTimeDay" id="updateTimeDay" min="0" max="3600" />
 				</form>
 				<form method="post">
-					<input type="submit" value="UpdateTimeNight: <?php echo $updateTimeNight; ?>"<br>
-					<input type="number" name="updateTimeNight" id=updateTimeNight min="0" max="3600"<br>
+					<input type="submit" value="Tijd voor melding 's nachts: <?php echo $updateTimeNight; ?>" />
+					<input type="number" style="width: 7em" name="updateTimeNight" id="updateTimeNight" min="0" max="3600" /><br>
 				</form>
 			</td>
 
