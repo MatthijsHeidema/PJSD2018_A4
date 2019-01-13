@@ -9,12 +9,8 @@
 
 int button1 = 0;
 
-IPAddress ip(172, 16, 4, 10);
-IPAddress gateway (172, 16, 4, 1);
-IPAddress subnet(255, 255, 255, 0);
-
-const char* ssid     = "WinnieThePi";
-const char* password = "3114800R";
+const char* ssid = "WinnieThePi";
+const char* password =  "3114800R";
 String received;
 char key[64];
 char value[64];
@@ -26,26 +22,32 @@ int analogValues[2];
 void Status(char value[]);
 void wifiSetup();
 
-WiFiServer wifiServer(3010);
+IPAddress ip(172, 16, 4, 14); // where xx is the desired IP Address
+IPAddress gateway(172, 16, 4, 1); // set gateway to match your network
+IPAddress subnet(255, 255, 255, 0); // set subnet mask to match your network
+
+WiFiServer wifiServer(3000);
 Servo myservo;  // create servo object to control a servo
 
 void setup() {
   myservo.attach(14);  // attaches the servo on pin D2 to the servo object
+  myservo.write(82);                    // tell servo to go to closed position (82 degree)
   Wire.begin();                         // Starting the I2C communication
   Serial.begin(115200);                 // Starting the I2C communication
   wifiSetup();                          // Starting the WiFi server
+  setDDR(0x02);                         // Set the DDR register
+  writeToOutput(0);                     // Turn LED off, just in case
 }
 
 void loop() {
-  WiFiClient client = wifiServer.available();
-
+  WiFiClient client = wifiServer.available();   // Creating a WiFiClient object
   if (client)
   {
     while (client.connected())
     {
       while (client.available() > 0)
       {
-        received = client.readStringUntil('\r');
+        received = client.readStringUntil('\r');    // Read until carrige return
       }
 
       if (!splitInto(received.c_str(), key, value)) {
@@ -55,8 +57,8 @@ void loop() {
         Serial.print("; value: ");
         Serial.println(value);
 
-        if (!strcmp(key, "doorStatus")) {
-          Status(value);
+        if (!strcmp(key, "doorStatus")) {           // When the doorStatus key has been received
+          Status(value);                            // Convert the value to a boolean
           if (state == 1)
           {
             openDoor();
@@ -64,28 +66,28 @@ void loop() {
             closeDoor();
           }
 
-        } else if (!strcmp(key, "redLight")) {
-          Status(value);
+        } else if (!strcmp(key, "redLight")) {        // When the redLight key has been received
+          Status(value);                              // Convert the value to a boolean
           if (state == 1)
           {
             Serial.println("Led ON");
-            writeToOutput(00000010);
+            writeToOutput(2);
           }
           else
           {
             Serial.println("Led OFF");
-            writeToOutput(00000000);
+            writeToOutput(0);
           }
 
-        } else if (!strcmp(key, "redButton")) {
-          ValueString = itoa(readSwitch(2), buffer_array, 10);
-          client.write(ValueString, sizeof(ValueString));
+        } else if (!strcmp(key, "redButton")) {                 // When the redButton key has been received
+          ValueString = itoa(readSwitch(2), buffer_array, 10);  // Reading and converting the button state
+          client.write(ValueString, sizeof(ValueString));       // Sending to the Raspberry Pi
 
         } else {
           Serial.println("Unknown command");
         }
 
-        received = "";
+        received = "";                                          // Empty the receive buffer
       } else {
         //Serial.println("invalid input");
       }
@@ -125,27 +127,27 @@ void readFromAnalog(int* analog_values) {            // Function for reading an 
 
   unsigned int analogInput1 = Wire.read() & 0x03;             // Reading the 2 Most Significant Bits from analog 1 input on the WIB
   analogInput1 = analogInput1 << 8;                           // Shifting these 2 bits 8 places to give these bits their original value
-  analogInput1 = analogInput1 | Wire.read();                  //Store the last 8 bits to their original value. (OR comparision 1 - 0 == 1
+  analogInput1 = analogInput1 | Wire.read();                  // Store the last 8 bits to their original value. (OR comparision 1 - 0 == 1
   analog_values[0] = analogInput0;
   analog_values[1] = analogInput1;
 }
 
 int readSwitch(int switch_bit) {
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x00));
-  Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);
-  int all_switches = Wire.read();
+  Wire.beginTransmission(0x38);                               // Begin transmission on 0x38
+  Wire.write(byte(0x00));                                     // Write 00
+  Wire.endTransmission();                                     // End
+  Wire.requestFrom(0x38, 1);                                  // Request data from WIB
+  int all_switches = Wire.read();                             // Put the data in all_Switches
   int switch_address = 0;
-  switch_address = 1 << (switch_bit - 1);
+  switch_address = 1 << (switch_bit - 1);                     // Filtering the needed bit
   int single_switch = all_switches & switch_address;
-  return single_switch;
+  return single_switch;                                       // Returning the value
 }
 
 int splitInto(const char* input, char key[64], char value[64]) {
 
   //Serial.print("input is:"); Serial.println(input);
-  const char *tracker = input;     //pointer to go through received
+  const char *tracker = input;        //pointer to go through received
   int command = 0;                    //differentiate between key and value
 
   //Empty key and value arrays
@@ -194,4 +196,16 @@ void openDoor()
 {
   myservo.write(163);             // tell servo to go to open position (163 degree)
   Serial.println("opened the door");
+}
+
+void setDDR(int IO) {
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x03));
+  Wire.write(byte(IO));
+  Wire.endTransmission();
+
+  Wire.beginTransmission(0x36);
+  Wire.write(byte(0xA2));
+  Wire.write(byte(0x03));
+  Wire.endTransmission();
 }
