@@ -2,7 +2,7 @@
  * TCP_Client.cpp
  *
  *  Created on: Dec 3, 2018
- *      Author: programmer
+ *      Author: Mathieu Gatsonides, Elmer Ruschen
  */
 
 #include "TCP_Client.h"
@@ -39,8 +39,8 @@ bool TCP_Client::connectToServer()
 
 	memset(&serv_addr, 0, sizeof(serv_addr));
 
-	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(port);
+	serv_addr.sin_family = AF_INET;				// Set the protocol family to IPv4
+	serv_addr.sin_port = htons(port);			// Set the port
 
 
 
@@ -51,7 +51,7 @@ bool TCP_Client::connectToServer()
 	        return -1;
 	    }
 
-	if(connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+	if(connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)			// Connect to the socket
 	    {
 	        printf("\nConnection Failed: ");
 	        printf("%s", ip_address);
