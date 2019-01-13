@@ -33,7 +33,7 @@ unsigned int inputs;
 bool state;
 char color_val[32] = {0};
 
-WiFiServer wifiServer(3005);
+WiFiServer wifiServer(3000);
 void wemosFi();
 int buttons();
 
