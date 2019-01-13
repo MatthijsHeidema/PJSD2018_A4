@@ -19,26 +19,23 @@ void Stoel::sync() {
 	int notificationTimeDay = file->getIntValue("updateTimeDay");
 	int notificationTimeNight = file->getIntValue("updateTimeNight");
 
-	cout << "Delay tijd dag: " << notificationTimeDay << endl;
-	cout << "Delay tijd nacht: " << notificationTimeNight << endl;
-
-	if(pressureSensorLogic(pressureSensor))
+	if(pressureSensorLogic(pressureSensor))		//Check if epileptic seizure is detected
 	{
-		file->edit("EpilepsieAanvalStoel",JA);
+		file->edit("EpilepsieAanvalStoel",JA);	//Write to JSON to send a notification to guard
 	}
 
 	if(nighttimeCheck())
 	{
-		if(difftime(time(0),timeOffDevice) > notificationTimeNight && !onDevice)
-		{
-			absentTooLong = true;
+		if(difftime(time(0),timeOffDevice) > notificationTimeNight && !onDevice)	//Check if Timothy has not been on his chair
+		{																			//for longer than set time at night
+			absentTooLong = true;													//Set boolean for the check in main loop
 		}
-		if(difftime(time(0),timeOnDevice) > notificationTimeNight && onDevice)
-		{
-			comm->sendValue("ChairVibrate","1");
-			file->edit("StoelTril",JA);
+		if(difftime(time(0),timeOnDevice) > notificationTimeNight && onDevice)		//Check if Timothy has been in his chair for
+		{																			//longer than the set time
+			comm->sendValue("ChairVibrate","1");									//Make the chair vibrate so Timothy doesn't fall
+			file->edit("StoelTril",JA);												//asleep
 		}
-		if(!onDevice && !strcmp(vibrateStatus,"1"))
+		if(!onDevice && !strcmp(vibrateStatus,"1"))									//Stop vibrating when Timothy gets up
 		{
 			comm->sendValue("ChairVibrate","0");
 			file->edit("StoelTril",NEE);
@@ -46,9 +43,9 @@ void Stoel::sync() {
 	}
 	else
 	{
-		if(difftime(time(0),timeOffDevice) > notificationTimeDay && !onDevice)
-		{
-			absentTooLong = true;
+		if(difftime(time(0),timeOffDevice) > notificationTimeDay && !onDevice)		//Check if Timothy has not been on his chair
+		{																			//for longer than the set time during the day
+			absentTooLong = true;													//Set boolean
 		}
 	}
 

@@ -14,16 +14,18 @@ void Zuil::sync() {
 	string NEE = "0";
 
 	const char* Rooksensor = comm->receiveValue("Rooksensor");
+	const char* alarmStatus = file ->getStringValue("SmokeAlarm");
 	int sensorValue = atoi(Rooksensor);
 
 	if(sensorValue > 300 && !RookStatus){
 		comm->sendValue("RookMelderStatus",JA);
-		file->edit("RookMelderStatus",JA);
+		file->edit("SmokeAlarm",JA);
 		RookStatus = true;
-	}else if(sensorValue < 300 && RookStatus){
+		cout << "Rook gedetecteerd!" << endl;
+	}else if(!strcmp(alarmStatus,NEE.c_str()) && RookStatus){
 		comm->sendValue("RookMelderStatus",NEE);
-		file->edit("RookMelderStatus",NEE);
 		RookStatus = false;
+		cout << "Alarm uitgeschakeld" << endl;
 	}
 
 	file->updateFile();

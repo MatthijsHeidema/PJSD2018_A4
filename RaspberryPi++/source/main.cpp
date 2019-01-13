@@ -6,7 +6,7 @@
 #include "Stoel.h"
 #include "Fridge.h"
 #include "Window.h"
-//#include "Column.h"
+#include "Zuil.h"
 
 #include "definitions.h"
 
@@ -17,13 +17,14 @@ int main()
 	//Construct JSON object for main
 	JsonFile main(FILE_PATH_MAIN, JSON_MAIN);
 
-	Lamp lamp(IP_LAMP, FILE_PATH_LAMP , 3005, JSON_LAMP);
-	Bed bed(IP_BED, FILE_PATH_BED, 3000, JSON_BED);
-	Stoel chair(IP_CHAIR, FILE_PATH_CHAIR, 3000, JSON_CHAIR);
-	Door door(IP_DOOR, FILE_PATH_DOOR, 3000, JSON_DOOR);
-	Fridge fridge(IP_FRIDGE, FILE_PATH_FRIDGE, 3000, JSON_FRIDGE);
-	Window window(IP_WINDOW, FILE_PATH_WINDOW, 3000, JSON_WINDOW);
-
+	//Construct devices
+	Lamp lamp(IP_LAMP, FILE_PATH_LAMP , PORT, JSON_LAMP);
+	Bed bed(IP_BED, FILE_PATH_BED, PORT, JSON_BED);
+	Stoel chair(IP_CHAIR, FILE_PATH_CHAIR, PORT, JSON_CHAIR);
+	Door door(IP_DOOR, FILE_PATH_DOOR, PORT, JSON_DOOR);
+	Fridge fridge(IP_FRIDGE, FILE_PATH_FRIDGE, PORT, JSON_FRIDGE);
+	Window window(IP_WINDOW, FILE_PATH_WINDOW, PORT, JSON_WINDOW);
+	Zuil zuil(IP_PILLAR, FILE_PATH_PILLAR, PORT, JSON_PILLAR);
 
 	//Connect to devices
 	lamp.connectToServer();
@@ -32,20 +33,25 @@ int main()
 	door.connectToServer();
 	fridge.connectToServer();
 	window.connectToServer();
+	zuil.connectToServer();
 	
 	while(1) {
+
+		//Loops through all devices, sync function handles everything
 		lamp.sync();
 		bed.sync();
 		chair.sync();
 		door.sync();
 		fridge.sync();
 		window.sync();
-		usleep(100000);
+		zuil.sync();
+		//usleep(50000);
 
-		if(bed.checkAbsence() && chair.checkAbsence())
-		{
-			main.edit("TooLongAbsent","1");
+		if(bed.checkAbsence() && chair.checkAbsence())	//Check if Timothy has not been in his chair or bed for
+		{												//the set amount of time to determine whether a notification
+			main.edit("TooLongAbsent","1");				//should be sent to the guard.
 		}
+
 	}
 
 	return 0;
