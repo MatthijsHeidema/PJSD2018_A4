@@ -12,19 +12,19 @@
 
 class JsonFile {
 public:
-	JsonFile(const char* filePath);	//Constructor either parses the contents of an existing file or creates a new file with contents {"NULL":"null"} if none is found
-	JsonFile(const char* filePath, const char* jsonContent);
-	int updateFile();			//Updates the file with the current contents of doc
-	int updateDoc();			//Updates the file with the current contents of file
-	void fill(const char* input);
-	void edit(const char* key, std::string newVal);
-	void edit(const char* key, int newVal);
-	void print(void);
-	int getIntValue(const char* key);
-	const char* getStringValue(const char* key);
+	JsonFile(const char* filePath);								//Constructor either parses the contents of an existing file or creates a new file with contents {"NULL":"null"} if none is found
+	JsonFile(const char* filePath, const char* jsonContent);	//Constructor creates a new file or overwrites existing file and fills it with jsonContent
+	int updateFile();											//Updates the file with the current contents of doc
+	int updateDoc();											//Updates the file with the current contents of file
+	void fill(const char* input);								//fills file with 'input'
+	void edit(const char* key, std::string newVal);				//change the value associated with 'key' to string 'newVal'
+	void edit(const char* key, int newVal);						//change the value associated with 'key' to int 'newVal'
+	void print(void);											//prints the contents of the file to the console
+	int getIntValue(const char* key);							//returns the value associated with 'key' as an int
+	const char* getStringValue(const char* key);				//returns the value associated with 'key' as a c-string
 
 private:
-	const char* filePath;
+	const char* filePath;		//path to the JSON file
 	rapidjson::Document* doc;	//Model that simulates the JSON file within the program
 	std::fstream* file;			//In/outputstream to the JSON file
 };

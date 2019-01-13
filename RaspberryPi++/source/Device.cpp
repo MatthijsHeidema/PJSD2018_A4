@@ -15,12 +15,12 @@ Device::Device(const char* ip_address, const char* filePath, int port, const cha
 
 void Device::sync(){};
 
-bool Device::connectToServer() {
+bool Device::connectToServer() { 	//Connect to domestic device, return false if it fails
 
 	return comm->connectToServer();
 }
 
-bool Device::nighttimeCheck() {
+bool Device::nighttimeCheck() {		//Returns true if it is currently night time, (for testing purposes, the first half of a minute is considered day, the second half is considered night)
 	time_t currentTime = time(0);
 	struct tm *tempTijd = gmtime(&currentTime);
 	if(tempTijd->tm_sec > 30)
