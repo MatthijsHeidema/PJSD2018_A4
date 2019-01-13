@@ -37,7 +37,7 @@ void setup() {
   Wire.begin();                         // Starting the I2C communication
   Serial.begin(115200);                 // Starting the I2C communication
   wifiSetup();                          // Starting the WiFi server
-  ledsSetup();                          //Starting the LED's
+  ledsSetup();                          // Starting the LED's
   setDDR(0x01);
   writeToOutput(0);
 }
@@ -51,7 +51,7 @@ void loop() {
     {
       while (client.available() > 0)
       {
-        received = client.readStringUntil('\r');
+        received = client.readStringUntil('\r');				// Read until carrige return
       }
       //readFromAnalog(analogValues);
       //Serial.println(analogValues[0]);
@@ -62,32 +62,32 @@ void loop() {
         Serial.print("; value: ");
         Serial.println(value);
 
-        if (!strcmp(key, "ledBrightness"))
+        if (!strcmp(key, "ledBrightness"))						// When the key ledBrightness has been received
         {
-          ledsBrightness(atoi(value));
+          ledsBrightness(atoi(value));							// Adjust the brightness to the received value
 
-        } else if (!strcmp(key, "analog0"))
+        } else if (!strcmp(key, "analog0"))						// When the key analog0 has been received
         {
-          readFromAnalog(analogValues);
-          analogValueString = itoa(analogValues[0], buffer_array, 10);
+          readFromAnalog(analogValues);												// Read analog values
+          analogValueString = itoa(analogValues[0], buffer_array, 10);				// Change it to string
           Serial.println(analogValueString);
-          client.write(analogValueString, 5);
+          client.write(analogValueString, 5);										// Send it to the Raspberry Pi
 
-        } else if (!strcmp(key, "windowStatus"))
+        } else if (!strcmp(key, "windowStatus"))				// When the key windowStatus has been received
         {
-          Status(value);
+          Status(value);										// Convert the value to a boolean
           if (state == 1)
           {
-            writeToOutput(00000001);
+            writeToOutput(1);									// Turn on the dimming
           } else
           {
-            writeToOutput(00000000);
+            writeToOutput(0);									// Turn off the dimming
           }
         } else
         {
           Serial.println("Unknown command");
         }
-        received = "";
+        received = "";											// Empty the buffer
       }
     }
   }
@@ -104,7 +104,6 @@ void wifiSetup()
 
   Serial.print("Connected to WiFi. IP:");
   Serial.println(WiFi.localIP());
-
   wifiServer.begin();
 }
 
@@ -175,15 +174,15 @@ void Status(char value[]) {
 
 void ledsSetup()
 {
-  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(96);
-  leds[0] = CRGB::White;
+  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);			// Add the leds to the FastLED object
+  FastLED.setBrightness(96);										// Set the brightness to 96
+  leds[0] = CRGB::White;											// Turning all leds to white
   leds[1] = CRGB::White;
   leds[2] = CRGB::White;
-  FastLED.show();
+  FastLED.show();													// Update the leds
 }
 
-void ledsBrightness(int brightness)
+void ledsBrightness(int brightness)									// Function for setting the LED brightness
 {
   FastLED.setBrightness(brightness);
   FastLED.show();
