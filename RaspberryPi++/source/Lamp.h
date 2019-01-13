@@ -12,7 +12,7 @@
 
 class Lamp : public Device { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
-	using Device::Device;
+	using Device::Device; //Use the constructor from parent class Device
 	void sync();
 };
 

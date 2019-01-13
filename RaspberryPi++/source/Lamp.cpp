@@ -10,21 +10,15 @@
 
 void Lamp::sync() {
 
-	file->updateDoc();
+	file->updateDoc();											//Update file->'doc' with current contents of the JSON file
 
-	const char* toggleLed = file->getStringValue("ToggleLed");
-	const char* color = file->getStringValue("Color");
-	comm->sendValue("ToggleLed", toggleLed);
-	//usleep(1000000);
-	cout << "ToggleLed" << toggleLed << endl;
-	comm->sendValue("Color", color);
-	//usleep(1000000);
-	cout << "Color" << color << endl;
-	const char* PIR = comm->receiveValue("PIR");
-	//usleep(1000000);
-	cout << "PIR: " << PIR << endl;
-	//file->edit("PIR", PIR);
+	const char* toggleLed = file->getStringValue("ToggleLed"); 	//Get value associated with "ToggleLed" from file
+	const char* color = file->getStringValue("Color");			//Get value associated with "Color" from file
+	comm->sendValue("ToggleLed", toggleLed);					//Send value 'toggleLed' to the lamp
+	comm->sendValue("Color", color);							//Send value 'color' to the lamp
 
-	//comm->disconnectFromServer();
-	file->updateFile();
+	const char* PIR = comm->receiveValue("PIR");				//Get value associated with "PIR" from lamp (movement sensor)
+	file->edit("PIR", PIR);										//Change value associated with "PIR" in file->'doc'
+
+	file->updateFile();											//Write changes to JSON file on hard disk
 }
