@@ -53,7 +53,9 @@ bool TCP_Client::connectToServer()
 
 	if(connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
 	    {
-	        printf("\nConnection Failed \n");
+	        printf("\nConnection Failed: ");
+	        printf("%s", ip_address);
+	        printf("\n");
 	        return -1;
 	    }
 

@@ -10,8 +10,7 @@
 
 CRGB led[NUM_LEDS];
 
-
-IPAddress ip(172, 16, 4, 4);
+IPAddress ip(172, 16, 4, 10);
 IPAddress gateway (172, 16, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 

@@ -5,6 +5,8 @@
 #include "Bed.h"
 #include "Stoel.h"
 #include "Fridge.h"
+#include "Window.h"
+//#include "Column.h"
 
 #include "definitions.h"
 
@@ -13,25 +15,37 @@ using namespace std;
 int main()
 {
 	//Construct JSON object for main
-	//JsonFile main(FILE_PATH_MAIN, JSON_MAIN);
+	JsonFile main(FILE_PATH_MAIN, JSON_MAIN);
 
-	//Lamp lamp("192.168.4.4", "/var/www/html/lamp.json" , 3005);
-	//Bed bed("192.168.4.8", "/var/www/html/bed.json", 3000);
-	//Stoel stoel("192.168.4.9", "/var/www/html/chair.json", 3001);
-	//Door door("192.168.4.10", "/var/www/html/door.json" , 3010);
-	Fridge fridge("172.16.4.20", FILE_PATH_FRIDGE, 3020);
+	Lamp lamp(IP_LAMP, FILE_PATH_LAMP , 3005, JSON_LAMP);
+	Bed bed(IP_BED, FILE_PATH_BED, 3000, JSON_BED);
+	Stoel chair(IP_CHAIR, FILE_PATH_CHAIR, 3000, JSON_CHAIR);
+	Door door(IP_DOOR, FILE_PATH_DOOR, 3000, JSON_DOOR);
+	Fridge fridge(IP_FRIDGE, FILE_PATH_FRIDGE, 3000, JSON_FRIDGE);
+	Window window(IP_WINDOW, FILE_PATH_WINDOW, 3000, JSON_WINDOW);
+
+
 	//Connect to devices
-	//lamp.connectToServer();
-	//stoel.connectToServer();
-	//bed.connectToServer();
+	lamp.connectToServer();
+	bed.connectToServer();
+	chair.connectToServer();
+	door.connectToServer();
 	fridge.connectToServer();
+	window.connectToServer();
 	
 	while(1) {
-		//lamp.sync();
-		//stoel.sync();
-		//bed.sync();
+		lamp.sync();
+		bed.sync();
+		chair.sync();
+		door.sync();
 		fridge.sync();
-		usleep(500000);
+		window.sync();
+		usleep(100000);
+
+		if(bed.checkAbsence() && chair.checkAbsence())
+		{
+			main.edit("TooLongAbsent","1");
+		}
 	}
 
 	return 0;
