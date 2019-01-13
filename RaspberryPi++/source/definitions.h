@@ -40,7 +40,7 @@
 #define FILE_PATH_FRIDGE "/var/www/html/fridge.json"
 #define JSON_FRIDGE "{\"OpenTooLong\":\"0\"}"
 
-#define FILE_PATH_COLUMN "/var/www/html/column.json"
-#define JSON_COLUMN "{\"RookMelderStatus\":\"0\",\"RookSensor\":\"0\"}"
+#define FILE_PATH_PILLAR "/var/www/html/pillar.json"
+#define JSON_PILLAR "{\"SmokeAlarm\":\"0\"}"
 
 #endif /* DEFINITIONS_H_ */
