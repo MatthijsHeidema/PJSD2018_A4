@@ -29,11 +29,11 @@ void Stoel::sync() {
 
 	if(nighttimeCheck())
 	{
-		if(difftime(time(0),timeOffDevice) > notificationTimeDay && !onDevice)
+		if(difftime(time(0),timeOffDevice) > notificationTimeNight && !onDevice)
 		{
 			absentTooLong = true;
 		}
-		if(difftime(time(0),timeOnDevice) > notificationTimeDay && onDevice)
+		if(difftime(time(0),timeOnDevice) > notificationTimeNight && onDevice)
 		{
 			comm->sendValue("ChairVibrate","1");
 			file->edit("StoelTril",JA);
@@ -46,7 +46,7 @@ void Stoel::sync() {
 	}
 	else
 	{
-		if(difftime(time(0),timeOffDevice) > notificationTimeNight && !onDevice)
+		if(difftime(time(0),timeOffDevice) > notificationTimeDay && !onDevice)
 		{
 			absentTooLong = true;
 		}
