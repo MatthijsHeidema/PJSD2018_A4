@@ -2,7 +2,7 @@
  * Window.cpp
  *
  *  Created on: Jan 10, 2019
- *      Author: programmer
+ *      Author: Mathieu Gatsonides
  */
 
 
@@ -20,28 +20,28 @@ void Window::sync()
 	int lichtSensor = atoi(comm->receiveValue("analog0"));
 	cout << "lichtSensorWaarde = " << lichtSensor << endl;
 	// Mode
-	if (!nighttimeCheck())	// Als het dag is
+	if (!nighttimeCheck())	// When it is day time
 	{
 		if (!strcmp(aangepast, "1"))
 		{
-			mode = 1;										// 1 = handmatige modus
+			mode = 1;										// 1 = Manual mode
 			aangepast = "0";
-			//aangepast json schrijven
-			time(&timeChanged);
-			cout << "Dag" << endl;
-		} else if (difftime(time(0), timeChanged) > 4)
+			// aangepast json writing
+			time(&timeChanged);								// Set the time changed to NOW
+			//cout << "Dag" << endl;						//Daytime
+		} else if (difftime(time(0), timeChanged) > 4)		// Return to manual mode when 4 seconds without playing have passed
 		{
-			mode = 0;									// 0 = auto mode
-			cout << "Auto mode" << endl;
+			mode = 0;										// 0 = automatic mode
+			//cout << "Auto mode" << endl;
 		}
 	}
-	else	// Als het nacht is
+	else	// When it is night time
 	{
-		mode = 0;
-		cout << "het is zogenaamd nacht!" << endl;
+		mode = 0;											// 0 = automatic mode
+		//cout << "het is zogenaamd nacht!" << endl;
 	}
-	cout << "de modus is " << mode << endl;
-	setWindow(lichtSensor);
+	//cout << "de modus is " << mode << endl;
+	setWindow(lichtSensor);									// Set window to appropriate brightness
 
 	// Write values to Wemos
 	//comm->sendValue("windowStatus", windowStatus);
@@ -51,35 +51,35 @@ void Window::sync()
 	file->updateFile();
 }
 
-void Window::setWindow(int lichtSensor)
+void Window::setWindow(int lichtSensor)						// Function that checks the mode and makes the decision what to do with the LED's
 {
-	string JA = "1";
+	string JA = "1";			// There were some problems with just using "1" and "0"
 	string NEE = "0";
 
 	string windowStatus;
-	if(mode == 0)		// Als automatische mode
+	if(mode == 0)				// When the mode is automatic
 	{
-		if (nighttimeCheck())
+		if (nighttimeCheck())	// When it is night
 		{
-			windowStatus = JA;
+			windowStatus = JA;							// Turn on dimming
 			comm->sendValue("ledBrightness", "0");
 		} else if (lichtSensor > 600)
 		{
-			windowStatus = JA;
+			windowStatus = JA;							// Turn on dimming
 			comm->sendValue("ledBrightness", "100");
 		} else
 		{
-			windowStatus = NEE;
+			windowStatus = NEE;							// Turn off dimming
 			comm->sendValue("ledBrightness", "50");
 		}
-	} else
+	} else						// When in manual mode take the value from the webserver (JSON FILE)
 	{
 		windowStatus = file->getStringValue("windowStatus");
-		cout << "handmodus windowStatus = " << windowStatus << endl;
+		//cout << "handmodus windowStatus = " << windowStatus << endl;
 	}
 
-	file->edit("windowStatus", windowStatus);
-	cout << "dit staat in de windowStatus: " << file->getStringValue("windowStatus");
-	file->updateFile();
-	comm->sendValue("windowStatus", windowStatus);
+	file->edit("windowStatus", windowStatus);			// Edit the window status
+	//cout << "dit staat in de windowStatus: " << file->getStringValue("windowStatus");
+	file->updateFile();									// Update the file
+	comm->sendValue("windowStatus", windowStatus);		// Send the decided windowValue to the Arduino
 }
