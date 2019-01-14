@@ -48,45 +48,31 @@
 					$window = updatePHP(WINDOW_PATH);
 					$lamp = updatePHP(LAMP_PATH);
 
-					$windowStatus = $window->{'windowStatus'};
 					if ($lamp->{'ToggleLed'}) {
 						$lampStatus = "aan";
 					} else {
 						$lampStatus = "uit";
 					}
+					
+					if ($window->{'windowStatus'} == "1") {
+						$windowStatus = "dicht";
+					} else {
+						$windowStatus = "open";
+					}
 
 				?>
 
 				<p>
-					Lamp is <?php echo $lampStatus ?><br>
-					Lamp kleur: <?php echo $lamp->{'Color'} ?><br>
 					<form method="post">
-						<input type="submit" name="ToggleLed_lamp" value="Toggle Lamp Led" />
+						<input id="notAButton"		type="submit" name="notAButton"		value="<?php echo $lamp->{'Color'} ?>"				/><br>
+						<input id="controlButton"	type="submit" name="ToggleLed_lamp"	value="Lamp <?php echo $lampStatus; ?>" 			/>
+						<input id="controlButton"	type="submit" name="windowStatus" 	value="Raam: <?php echo $windowStatus;?>"			/><br>
+						<input id="whiteButton" 	type="submit" name="Color_lamp" 	value="White"	 									/>
+						<input id="greenButton" 	type="submit" name="Color_lamp" 	value="Green"	 									/><br>
+						<input id="redButton" 		type="submit" name="Color_lamp" 	value="Red"		 									/>
+						<input id="blueButton" 		type="submit" name="Color_lamp" 	value="Blue"	 									/><br>
+						<input id="yellowButton"	type="submit" name="Color_lamp" 	value="Yellow"	 									/><br>
 					</form>
-					<form method="post">
-						<input type="radio" name="Color_lamp" value="White" checked/> White <br>
-						<input type="radio" name="Color_lamp" value="Green" /> Green <br>
-						<input type="radio" name="Color_lamp" value="Red" /> Red <br>
-						<input type="radio" name="Color_lamp" value="Blue" /> Blue <br>
-						<input type="radio" name="Color_lamp" value="Yellow" /> Yellow <br>
-						<input type="submit"/> <br>
-					</form>
-					<form method="post">
-						<input type="submit" name="windowStatus" value="windowStatus: <?php echo $windowStatus;?>"/>
-					</form>
-
-					<div class="""slidecontainer">
-	  				<input type="range" min="1" max="100" value="50" class="slider" id="slider">
-	  				<p>Value: <span id="demo"></span></p>
-					</div>
-					<script>
-						var slider = document.getElementById("slider");
-						var output = document.getElementById("demo");
-						output.innerHTML = slider.value;
-						slider.oninput = function() {
-	  				output.innerHTML = this.value;
-						}
-					</script>
 				</p>
 
 				<?php

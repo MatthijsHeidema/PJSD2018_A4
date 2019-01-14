@@ -7,7 +7,7 @@
 <body>
 		<ul>
 			<li><a href="index.php">Timothy</a></li>
-			<li><a  href="Bewaker.php">Gaurd</a></li>
+			<li><a  href="Bewaker.php">Guard</a></li>
 			<li><a class="active" href="Verpleegster.php">Nurse</a></li>
 		</ul>
 		<?php
@@ -15,6 +15,7 @@
 				error_reporting(E_ALL);
 				
 				define("DOOR_PATH", "door.json");
+				define("CHAIR_PATH", "chair.json");
 				define("BED_PATH", "bed.json");
 				
 				function updatePHP($path) {
@@ -43,7 +44,10 @@
 
 				$door = updatePHP(DOOR_PATH);
 				$bed = updatePHP(BED_PATH);
+				$chair = updatePHP(CHAIR_PATH);
 				$OutOfBedCount = $bed->{'OutOfBedCount'};
+				$updateTimeDay = $bed->{'updateTimeDay'};
+				$updateTimeNight = $bed->{'updateTimeNight'};
 	
 				if ($door->{'doorStatus'}) {
 					$doorStatus = "open";
@@ -57,7 +61,15 @@
 				
 				<form method="post">
 					<input type="submit" name="doorStatus" value="Deur: <?php echo $doorStatus; ?>" />
-				</form><br>
+				</form><br><br>
+				<form method="post">
+					<input type="submit" value="Tijd voor melding overdag: <?php echo $updateTimeDay; ?>" />
+					<input type="number" style="width: 7em" name="updateTimeDay" id="updateTimeDay" min="0" max="3600" />
+				</form>
+				<form method="post">
+					<input type="submit" value="Tijd voor melding 's nachts: <?php echo $updateTimeNight; ?>" />
+					<input type="number" style="width: 7em" name="updateTimeNight" id="updateTimeNight" min="0" max="3600" /><br>
+				</form>
 				
 				<p>Uw patient is afgelopen nacht <?php echo $OutOfBedCount ?> keer uit bed geweest.</p>
 				
@@ -75,6 +87,22 @@
 						$door->{'doorStatus'} = "1";
 					}
 					updateJson($door, DOOR_PATH);
+				}
+				
+				if(array_key_exists('updateTimeDay', $_POST))
+				{
+					$bed->{'updateTimeDay'} = (int)$_POST["updateTimeDay"];
+					$chair->{'updateTimeDay'} = (int)$_POST["updateTimeDay"];
+					updateJson($bed, BED_PATH);
+					updateJson($chair, CHAIR_PATH);
+				}
+
+				if(array_key_exists('updateTimeNight', $_POST))
+				{
+					$bed->{'updateTimeNight'} = (int)$_POST["updateTimeNight"];
+					$chair->{'updateTimeNight'} = (int)$_POST["updateTimeNight"];
+					updateJson($bed, BED_PATH);
+					updateJson($chair, CHAIR_PATH);
 				}
 			?>
 

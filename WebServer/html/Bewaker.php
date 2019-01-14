@@ -54,9 +54,7 @@
 			} else {
 				$doorStatus = "gesloten";
 			}
-
-			$updateTimeDay = $bed->{'updateTimeDay'};
-			$updateTimeNight = $bed->{'updateTimeNight'};
+			
 			$windowStatus = $window->{'windowStatus'};
 		?>
 
@@ -105,14 +103,6 @@
 			<td>
 				<form method="post">
 					<input type="submit" name="doorStatus" value="Deur: <?php echo $doorStatus; ?>" />
-				</form><br><br><br><br>
-				<form method="post">
-					<input type="submit" value="Tijd voor melding overdag: <?php echo $updateTimeDay; ?>" />
-					<input type="number" style="width: 7em" name="updateTimeDay" id="updateTimeDay" min="0" max="3600" />
-				</form>
-				<form method="post">
-					<input type="submit" value="Tijd voor melding 's nachts: <?php echo $updateTimeNight; ?>" />
-					<input type="number" style="width: 7em" name="updateTimeNight" id="updateTimeNight" min="0" max="3600" /><br>
 				</form>
 			</td>
 
@@ -156,22 +146,6 @@
 						$door->{'doorStatus'} = "1";
 					}
 					updateJson($door, DOOR_PATH);
-				}
-
-				if(array_key_exists('updateTimeDay', $_POST))
-				{
-					$bed->{'updateTimeDay'} = (int)$_POST["updateTimeDay"];
-					$chair->{'updateTimeDay'} = (int)$_POST["updateTimeDay"];
-					updateJson($bed, BED_PATH);
-					updateJson($chair, CHAIR_PATH);
-				}
-
-				if(array_key_exists('updateTimeNight', $_POST))
-				{
-					$bed->{'updateTimeNight'} = (int)$_POST["updateTimeNight"];
-					$chair->{'updateTimeNight'} = (int)$_POST["updateTimeNight"];
-					updateJson($bed, BED_PATH);
-					updateJson($chair, CHAIR_PATH);
 				}
 		?>
 </body>

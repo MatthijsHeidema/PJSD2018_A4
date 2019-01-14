@@ -206,6 +206,59 @@ input[type="checkbox"].green.ios-switch:checked + div > div {
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 162, 63,1);
 }
 
+#whiteButton {
+	background-color: white;
+	border: outset;
+	color: black;
+	width: 150px;
+	text-indent: -999999px;
+}
+
+#greenButton {
+	background-color: #009933;
+	border: outset;
+	color: black;
+	width: 150px;
+	text-indent: -999999px;
+}
+
+#blueButton {
+	background-color: #33ccff;
+	border: outset;
+	color: black;
+	width: 150px;
+	text-indent: -999999px;
+}
+
+#redButton {
+	background-color: red;
+	border: outset;
+	color: black;
+	width: 150px;
+	text-indent: -999999px;
+}
+
+#yellowButton {
+	background-color: yellow;
+	border: outset;
+	color: black;
+	width: 150px;
+	margin-left: 77px;
+	text-indent: -999999px;
+}
+
+#controlButton {
+	width: 150px;
+}
+
+#notAButton {
+	background-color: black;
+	border: double;
+	border-color: yellow;
+	color: yellow;
+	width: 309px;
+}
+
 @media all and (max-width: 600px)
 {
 	section
