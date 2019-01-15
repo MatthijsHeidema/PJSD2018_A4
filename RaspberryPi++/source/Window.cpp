@@ -18,7 +18,7 @@ void Window::sync()
 
 	// Read values from Wemos
 	int lichtSensor = atoi(comm->receiveValue("analog0"));
-	cout << "lichtSensorWaarde = " << lichtSensor << endl;
+	//cout << "lichtSensorWaarde = " << lichtSensor << endl;
 	// Mode
 	if (!nighttimeCheck())	// When it is day time
 	{

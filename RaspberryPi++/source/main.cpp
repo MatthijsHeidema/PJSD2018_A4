@@ -49,7 +49,9 @@ int main()
 
 		if(bed.checkAbsence() && chair.checkAbsence())	//Check if Timothy has not been in his chair or bed for
 		{												//the set amount of time to determine whether a notification
-			main.edit("TooLongAbsent","1");				//should be sent to the guard.
+			string yes = "1";
+			main.edit("TooLongAbsent",yes);				//should be sent to the guard.
+			cout << "CheckAbsence" << endl;
 		}
 
 	}

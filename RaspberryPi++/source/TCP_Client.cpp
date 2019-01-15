@@ -75,7 +75,7 @@ int TCP_Client::sendString(string str)
 int TCP_Client::sendValue(string key, string value)
 {
 	string sendformat = key + ":" + value + "\r";		//Putting the key and value in json format
-	cout << "Verzonden string: " << sendformat << endl;
+	//cout << "Verzonden string: " << sendformat << endl;
 	return sendString(sendformat);									//Sending the key and value. Returning the bytes transmitted or -1 when an error occurs.
 }
 

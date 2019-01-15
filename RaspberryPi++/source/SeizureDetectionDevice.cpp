@@ -17,6 +17,7 @@ bool SeizureDetectionDevice::pressureSensorLogic(const char* value) {
 		deviceUpdate = false;
 		absentTooLong = false;
 		movementCounter++;								//Increase movement counter for seizure detection
+		cout << "movementcounter:" << movementCounter << endl;
 
 		if(intervalStart)								//Check if it's the start of a new interval for seizure detection
 		{
@@ -31,7 +32,7 @@ bool SeizureDetectionDevice::pressureSensorLogic(const char* value) {
 		time(&timeOffDevice);
 	}
 
-	if(difftime(time(0),intervalStartTime) > 8)			//Check if interval for seizure detection has passed
+	if(difftime(time(0),intervalStartTime) > 16)			//Check if interval for seizure detection has passed
 	{
 		time(&intervalStartTime);						//Restart interval
 		movementCounter = 0;							//Reset movement count

@@ -17,7 +17,7 @@ void Zuil::sync() {
 	const char* alarmStatus = file ->getStringValue("SmokeAlarm");
 	int sensorValue = atoi(Rooksensor);
 
-	if(sensorValue > 300 && !RookStatus){
+	if(sensorValue < 300 && !RookStatus){
 		comm->sendValue("RookMelderStatus",JA);
 		file->edit("SmokeAlarm",JA);
 		RookStatus = true;
